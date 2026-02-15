@@ -74,37 +74,17 @@ struct PopupView: View {
 
             // Actions
             HStack {
-                Menu("Share...") {
-                    Button("Daily") {
-                        let card = DailyRecapCard(
-                            todayMM: viewModel.todayDistanceMM,
-                            formattedDistance: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem),
-                            comparison: RealWorldComparison.compare(mm: viewModel.todayDistanceMM),
-                            milestone: viewModel.lastMilestoneTitle,
-                            date: Self.todayDateString()
-                        )
-                        ShareService.shareImage(from: card)
-                    }
-                    Button("Total") {
-                        let card = AllTimeStatsCard(
-                            totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
-                            daysTracked: viewModel.daysTracked,
-                            bestDayFormatted: DistanceUnit.autoFormat(mm: viewModel.bestDayMM, system: viewModel.unitSystem),
-                            highestMilestone: viewModel.lastMilestoneTitle
-                        )
-                        ShareService.shareImage(from: card)
-                    }
-                    Button("Milestone") {
-                        guard let milestone = viewModel.lastReachedMilestone else { return }
-                        let card = MilestoneCard(
-                            title: milestone.title,
-                            message: milestone.body,
-                            totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
-                            icon: milestone.icon
-                        )
-                        ShareService.shareImage(from: card)
-                    }
-                    .disabled(viewModel.lastReachedMilestone == nil)
+                Button("Share") {
+                    let card = ShareCard(
+                        todayFormatted: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem),
+                        totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
+                        comparison: RealWorldComparison.compare(mm: viewModel.todayDistanceMM),
+                        daysTracked: viewModel.daysTracked,
+                        bestDayFormatted: DistanceUnit.autoFormat(mm: viewModel.bestDayMM, system: viewModel.unitSystem),
+                        milestone: viewModel.lastReachedMilestone,
+                        date: Self.todayDateString()
+                    )
+                    ShareService.shareImage(from: card)
                 }
 
                 Spacer()
