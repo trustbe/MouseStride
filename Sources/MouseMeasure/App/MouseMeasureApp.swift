@@ -8,10 +8,11 @@ struct MouseMeasureApp: App {
         MenuBarExtra {
             PopupView(viewModel: viewModel)
         } label: {
-            HStack(spacing: 4) {
-                Image(systemName: "computermouse.fill")
+            HStack(spacing: 3) {
+                Image(systemName: "cursorarrow.motionlines")
                 Text(viewModel.statusBarText)
                     .monospacedDigit()
+                    .font(.caption)
             }
         }
         .menuBarExtraStyle(.window)

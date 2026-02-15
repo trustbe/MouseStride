@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>MouseFitness</string>
+    <string>Mouse Fitness</string>
     <key>CFBundleIdentifier</key>
     <string>com.mousefitness.app</string>
     <key>CFBundleVersion</key>

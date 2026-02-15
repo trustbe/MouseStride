@@ -4,18 +4,15 @@ import SwiftUI
 
 @MainActor
 final class MouseMeasureViewModel: ObservableObject {
-    @Published var sessionDistanceMM: Double = 0
     @Published var todayDistanceMM: Double = 0
     @Published var totalDistanceMM: Double = 0
     @Published var statusBarText: String = "0 mm"
-    @Published var formattedAvgSpeed: String = "0 mm/s"
     @Published var lastMilestoneTitle: String? = nil
     @Published var nextMilestoneText: String? = nil
     @Published var unitSystem: UnitSystem {
         didSet {
             UserDefaults.standard.set(unitSystem.rawValue, forKey: "unitSystem")
             updateStatusBar()
-            updateAvgSpeed()
         }
     }
 
@@ -26,7 +23,6 @@ final class MouseMeasureViewModel: ObservableObject {
 
     private var uiTimer: Timer?
     private var saveTimer: Timer?
-    private var sessionStartDate = Date()
 
     /// Points accumulated since last UI update, converted to mm and added to running totals
     private var pendingMM: Double = 0
@@ -51,13 +47,6 @@ final class MouseMeasureViewModel: ObservableObject {
         saveTimer?.invalidate()
     }
 
-    func resetSession() {
-        sessionDistanceMM = 0
-        sessionStartDate = Date()
-        updateStatusBar()
-        updateAvgSpeed()
-    }
-
     func resetToday() {
         todayDistanceMM = 0
         if pendingMM > 0 {
@@ -68,15 +57,12 @@ final class MouseMeasureViewModel: ObservableObject {
     }
 
     func resetAll() {
-        sessionDistanceMM = 0
         todayDistanceMM = 0
         totalDistanceMM = 0
         pendingMM = 0
-        sessionStartDate = Date()
         persistence.resetAll()
         milestones.resetMilestones()
         updateStatusBar()
-        updateAvgSpeed()
     }
 
     func quit() {
@@ -104,14 +90,12 @@ final class MouseMeasureViewModel: ObservableObject {
         let points = mouseTracker.drainAccumulatedPoints()
         if points > 0 {
             let mm = distanceCalculator.pointsToMM(points)
-            sessionDistanceMM += mm
             todayDistanceMM += mm
             totalDistanceMM += mm
             pendingMM += mm
         }
 
         updateStatusBar()
-        updateAvgSpeed()
         updateMilestoneInfo()
         milestones.checkMilestones(totalMM: totalDistanceMM)
     }
@@ -132,32 +116,6 @@ final class MouseMeasureViewModel: ObservableObject {
 
     private func updateStatusBar() {
         statusBarText = DistanceUnit.autoFormat(mm: totalDistanceMM, system: unitSystem)
-    }
-
-    private func updateAvgSpeed() {
-        let elapsed = Date().timeIntervalSince(sessionStartDate)
-        guard elapsed > 0 else {
-            formattedAvgSpeed = unitSystem == .metric ? "0 mm/s" : "0 in/s"
-            return
-        }
-        let mmPerSec = sessionDistanceMM / elapsed
-        switch unitSystem {
-        case .metric:
-            if mmPerSec >= 1_000 {
-                formattedAvgSpeed = String(format: "%.1f m/s", mmPerSec / 1_000)
-            } else if mmPerSec >= 10 {
-                formattedAvgSpeed = String(format: "%.1f cm/s", mmPerSec / 10)
-            } else {
-                formattedAvgSpeed = String(format: "%.1f mm/s", mmPerSec)
-            }
-        case .imperial:
-            let inPerSec = mmPerSec / 25.4
-            if inPerSec >= 12 {
-                formattedAvgSpeed = String(format: "%.1f ft/s", inPerSec / 12)
-            } else {
-                formattedAvgSpeed = String(format: "%.1f in/s", inPerSec)
-            }
-        }
     }
 
     // MARK: - Persistence (drain-and-fold)

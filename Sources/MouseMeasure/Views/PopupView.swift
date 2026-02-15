@@ -12,7 +12,7 @@ struct PopupView: View {
                     .font(.title2)
                     .foregroundStyle(.primary)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("MouseFitness")
+                    Text("Mouse Fitness")
                         .font(.headline)
                     Text(tagline(forMM: viewModel.totalDistanceMM))
                         .font(.caption)
@@ -49,22 +49,8 @@ struct PopupView: View {
             Divider()
 
             // Stats
-            StatRow(label: "This Session", value: DistanceUnit.autoFormat(mm: viewModel.sessionDistanceMM, system: viewModel.unitSystem), icon: "play.circle")
             StatRow(label: "Today", value: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem), icon: "calendar")
             StatRow(label: "All Time", value: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem), icon: "infinity")
-
-            // Average speed
-            HStack(spacing: 6) {
-                Image(systemName: "gauge.with.needle")
-                    .foregroundStyle(.secondary)
-                    .frame(width: 16)
-                Text("Avg Speed")
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Text(viewModel.formattedAvgSpeed)
-                    .monospacedDigit()
-                    .fontWeight(.medium)
-            }
 
             Divider()
 
@@ -89,13 +75,6 @@ struct PopupView: View {
             // Actions
             HStack {
                 Menu("Reset...") {
-                    Button("Reset Session") {
-                        confirmAndRun(
-                            title: "Reset Session?",
-                            message: "Your mouse worked so hard this session... all that effort, gone. Like tears in rain.",
-                            action: viewModel.resetSession
-                        )
-                    }
                     Button("Reset Today") {
                         confirmAndRun(
                             title: "Reset Today?",
@@ -118,8 +97,8 @@ struct PopupView: View {
 
                 Button("Quit") {
                     confirmAndRun(
-                        title: "Quit MouseFitness?",
-                        message: "Don't worry, your mouse's lifetime achievements are saved. But this session? History.",
+                        title: "Quit Mouse Fitness?",
+                        message: "Don't worry, your mouse's lifetime achievements are saved.",
                         destructiveLabel: "Quit",
                         action: viewModel.quit
                     )
