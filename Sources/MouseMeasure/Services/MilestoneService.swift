@@ -65,7 +65,9 @@ final class MilestoneService {
     }
 
     init() {
-        requestPermission()
+        if Bundle.main.bundleIdentifier != nil {
+            requestPermission()
+        }
     }
 
     func checkMilestones(totalMM: Double) {
@@ -103,6 +105,7 @@ final class MilestoneService {
     }
 
     private func sendNotification(milestone: Milestone) {
+        guard Bundle.main.bundleIdentifier != nil else { return }
         let content = UNMutableNotificationContent()
         content.title = milestone.title
         content.body = milestone.body
