@@ -12,7 +12,7 @@ struct PopupView: View {
                     .font(.title2)
                     .foregroundStyle(.primary)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Mouse Fitness")
+                    Text("CursorFit")
                         .font(.headline)
                     Text(tagline(forMM: viewModel.totalDistanceMM))
                         .font(.caption)
@@ -97,7 +97,7 @@ struct PopupView: View {
 
                 Button("Quit") {
                     confirmAndRun(
-                        title: "Quit Mouse Fitness?",
+                        title: "Quit CursorFit?",
                         message: "Don't worry, your mouse's lifetime achievements are saved.",
                         destructiveLabel: "Quit",
                         action: viewModel.quit
@@ -137,19 +137,19 @@ struct PopupView: View {
         case ..<10_000:     // < 10 m
             return "Getting into the groove"
         case ..<100_000:    // < 100 m
-            return "Your mouse is doing laps"
+            return "Your cursor is doing laps"
         case ..<1_000_000:  // < 1 km
             return "Training for a marathon"
         case ..<5_000_000:  // < 5 km
-            return "Your mouse runs marathons!"
+            return "Your cursor runs marathons!"
         case ..<10_000_000: // < 10 km
-            return "Ultramarathon mouse!"
+            return "Ultramarathon cursor!"
         case ..<42_195_000: // < 42.195 km
-            return "Your mouse needs new shoes"
+            return "Your cursor needs new shoes"
         case ..<100_000_000: // < 100 km
             return "Marathon completed!"
         default:
-            return "Your mouse has seen the world"
+            return "Your cursor has seen the world"
         }
     }
 }
