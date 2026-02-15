@@ -25,7 +25,7 @@ struct PopupView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     if let last = viewModel.lastMilestoneTitle {
                         HStack(spacing: 4) {
-                            Image(systemName: "trophy.fill")
+                            Image(systemName: viewModel.lastMilestoneIcon ?? "trophy.fill")
                                 .font(.caption2)
                                 .foregroundStyle(.yellow)
                             Text(last)
@@ -35,7 +35,7 @@ struct PopupView: View {
                     }
                     if let next = viewModel.nextMilestoneText {
                         HStack(spacing: 4) {
-                            Image(systemName: "flag.checkered")
+                            Image(systemName: viewModel.nextMilestoneIcon ?? "flag.checkered")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                             Text(next)
@@ -75,7 +75,7 @@ struct PopupView: View {
             // Actions
             HStack {
                 Menu("Share...") {
-                    Button("Daily Recap") {
+                    Button("Daily") {
                         let card = DailyRecapCard(
                             todayMM: viewModel.todayDistanceMM,
                             formattedDistance: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem),
@@ -85,7 +85,7 @@ struct PopupView: View {
                         )
                         ShareService.shareImage(from: card)
                     }
-                    Button("All-Time Stats") {
+                    Button("Total") {
                         let card = AllTimeStatsCard(
                             totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
                             daysTracked: viewModel.daysTracked,
@@ -99,7 +99,8 @@ struct PopupView: View {
                         let card = MilestoneCard(
                             title: milestone.title,
                             message: milestone.body,
-                            totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem)
+                            totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
+                            icon: milestone.icon
                         )
                         ShareService.shareImage(from: card)
                     }

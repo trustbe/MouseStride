@@ -161,6 +161,7 @@ struct MilestoneCard: View {
     let title: String
     let message: String
     let totalFormatted: String
+    let icon: String
 
     var body: some View {
         ZStack {
@@ -169,7 +170,7 @@ struct MilestoneCard: View {
             VStack(spacing: 16) {
                 Spacer()
 
-                Image(systemName: "trophy.fill")
+                Image(systemName: icon)
                     .font(.system(size: 40))
                     .foregroundStyle(.yellow)
 

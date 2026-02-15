@@ -8,7 +8,9 @@ final class MouseMeasureViewModel: ObservableObject {
     @Published var totalDistanceMM: Double = 0
     @Published var statusBarText: String = "0 mm"
     @Published var lastMilestoneTitle: String? = nil
+    @Published var lastMilestoneIcon: String? = nil
     @Published var nextMilestoneText: String? = nil
+    @Published var nextMilestoneIcon: String? = nil
     @Published var unitSystem: UnitSystem {
         didSet {
             UserDefaults.standard.set(unitSystem.rawValue, forKey: "unitSystem")
@@ -108,14 +110,18 @@ final class MouseMeasureViewModel: ObservableObject {
     private func updateMilestoneInfo() {
         if let last = milestones.lastReachedMilestone(totalMM: totalDistanceMM) {
             lastMilestoneTitle = last.title
+            lastMilestoneIcon = last.icon
         } else {
             lastMilestoneTitle = nil
+            lastMilestoneIcon = nil
         }
         if let next = milestones.nextMilestone(totalMM: totalDistanceMM) {
             let remaining = next.distanceMM - totalDistanceMM
             nextMilestoneText = "\(next.title.replacingOccurrences(of: "!", with: "")) in \(DistanceUnit.autoFormat(mm: remaining, system: unitSystem))"
+            nextMilestoneIcon = next.icon
         } else {
             nextMilestoneText = nil
+            nextMilestoneIcon = nil
         }
     }
 
