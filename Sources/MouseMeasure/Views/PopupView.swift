@@ -12,7 +12,7 @@ struct PopupView: View {
                     .font(.title2)
                     .foregroundStyle(.primary)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("CursorFit")
+                    Text("MouseStride")
                         .font(.headline)
                     Text(tagline(forMM: viewModel.totalDistanceMM))
                         .font(.caption)
@@ -74,30 +74,20 @@ struct PopupView: View {
 
             // Actions
             HStack {
-                Menu("Reset...") {
-                    Button("Reset Today") {
-                        confirmAndRun(
-                            title: "Reset Today?",
-                            message: "Today's progress will vanish. Your mouse won't remember any of this.",
-                            action: viewModel.resetToday
-                        )
-                    }
-                    Divider()
-                    Button("Reset All") {
-                        confirmAndRun(
-                            title: "Reset Everything?",
-                            message: "Every millimeter. Every kilometer. All gone forever. Your mouse will have an existential crisis.",
-                            destructiveLabel: "Delete All Data",
-                            action: viewModel.resetAll
-                        )
-                    }
+                Button("Reset") {
+                    confirmAndRun(
+                        title: "Reset all data?",
+                        message: "Every millimeter, every milestone - back to zero. Your mouse will have an existential crisis.",
+                        destructiveLabel: "Delete All Data",
+                        action: viewModel.resetAll
+                    )
                 }
 
                 Spacer()
 
                 Button("Quit") {
                     confirmAndRun(
-                        title: "Quit CursorFit?",
+                        title: "Quit MouseStride?",
                         message: "Don't worry, your mouse's lifetime achievements are saved.",
                         destructiveLabel: "Quit",
                         action: viewModel.quit
@@ -137,19 +127,19 @@ struct PopupView: View {
         case ..<10_000:     // < 10 m
             return "Getting into the groove"
         case ..<100_000:    // < 100 m
-            return "Your cursor is doing laps"
+            return "Your mouse is doing laps"
         case ..<1_000_000:  // < 1 km
             return "Training for a marathon"
         case ..<5_000_000:  // < 5 km
-            return "Your cursor runs marathons!"
+            return "Your mouse runs marathons!"
         case ..<10_000_000: // < 10 km
-            return "Ultramarathon cursor!"
+            return "Ultramarathon mouse!"
         case ..<42_195_000: // < 42.195 km
-            return "Your cursor needs new shoes"
+            return "Your mouse needs new shoes"
         case ..<100_000_000: // < 100 km
             return "Marathon completed!"
         default:
-            return "Your cursor has seen the world"
+            return "Your mouse has seen the world"
         }
     }
 }
