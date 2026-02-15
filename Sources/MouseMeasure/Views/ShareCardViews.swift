@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Shared Card Style
 
 private let cardWidth: CGFloat = 600
-private let cardHeight: CGFloat = 400
+private let cardHeight: CGFloat = 440
 
 private struct CardBackground: View {
     var body: some View {
@@ -43,82 +43,62 @@ struct ShareCard: View {
         ZStack {
             CardBackground()
 
-            HStack(spacing: 20) {
-                // Mouse character - left side
-                MouseCharacter(milestone: milestone, size: 120)
-                    .padding(.leading, 16)
+            VStack(spacing: 10) {
+                Spacer()
 
-                // Stats - right side
-                VStack(spacing: 12) {
-                    Spacer()
+                // Mouse character - centered, big
+                MouseCharacter(milestone: milestone, size: 200)
 
-                    // Today's distance - hero number
+                // Milestone title as hero (or today distance if no milestone)
+                if let milestone = milestone {
+                    HStack(spacing: 8) {
+                        Image(systemName: milestone.icon)
+                        Text(milestone.title.uppercased())
+                        Image(systemName: milestone.icon)
+                    }
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .foregroundStyle(.yellow)
+
                     Text("Today: \(todayFormatted)")
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                        .font(.system(size: 22, weight: .semibold, design: .rounded))
                         .foregroundStyle(.green)
-
-                    Text("\"\(comparison)\"")
-                        .font(.callout)
-                        .foregroundStyle(.white.opacity(0.7))
-                        .italic()
-
-                    // All-time stats row
-                    HStack(spacing: 20) {
-                        VStack(spacing: 4) {
-                            Text(totalFormatted)
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.white)
-                            Text("All Time")
-                                .font(.caption)
-                                .foregroundStyle(.white.opacity(0.5))
-                        }
-
-                        VStack(spacing: 4) {
-                            Text("\(daysTracked)")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.white)
-                            Text("Days")
-                                .font(.caption)
-                                .foregroundStyle(.white.opacity(0.5))
-                        }
-
-                        VStack(spacing: 4) {
-                            Text(bestDayFormatted)
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.white)
-                            Text("Best Day")
-                                .font(.caption)
-                                .foregroundStyle(.white.opacity(0.5))
-                        }
-                    }
-
-                    // Milestone badge
-                    if let milestone = milestone {
-                        HStack(spacing: 6) {
-                            Image(systemName: milestone.icon)
-                                .foregroundStyle(.yellow)
-                            Text(milestone.title)
-                                .fontWeight(.medium)
-                                .foregroundStyle(.yellow)
-                        }
-                        .font(.callout)
-                    }
-
-                    Spacer()
-
-                    HStack {
-                        Text(date)
-                            .font(.caption)
-                            .foregroundStyle(.white.opacity(0.4))
-                        Spacer()
-                        CardBranding()
-                    }
+                } else {
+                    Text("Today: \(todayFormatted)")
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
+                        .foregroundStyle(.green)
                 }
-                .padding(.trailing, 24)
-                .padding(.vertical, 20)
+
+                Text("\"\(comparison)\"")
+                    .font(.callout)
+                    .foregroundStyle(.white.opacity(0.6))
+                    .italic()
+
+                // Compact stats row
+                HStack(spacing: 6) {
+                    Text(totalFormatted).fontWeight(.bold) +
+                    Text(" All Time").foregroundColor(.white.opacity(0.5))
+                    Text("·").foregroundStyle(.white.opacity(0.3))
+                    Text("\(daysTracked)").fontWeight(.bold) +
+                    Text(" Days").foregroundColor(.white.opacity(0.5))
+                    Text("·").foregroundStyle(.white.opacity(0.3))
+                    Text(bestDayFormatted).fontWeight(.bold) +
+                    Text(" Best Day").foregroundColor(.white.opacity(0.5))
+                }
+                .font(.caption)
+                .foregroundStyle(.white)
+
+                Spacer()
+
+                // Footer
+                HStack {
+                    Text(date)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.4))
+                    Spacer()
+                    CardBranding()
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 12)
             }
         }
         .frame(width: cardWidth, height: cardHeight)
