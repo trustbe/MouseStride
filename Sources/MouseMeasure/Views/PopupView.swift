@@ -74,6 +74,40 @@ struct PopupView: View {
 
             // Actions
             HStack {
+                Menu("Share...") {
+                    Button("Daily Recap") {
+                        let card = DailyRecapCard(
+                            todayMM: viewModel.todayDistanceMM,
+                            formattedDistance: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem),
+                            comparison: RealWorldComparison.compare(mm: viewModel.todayDistanceMM),
+                            milestone: viewModel.lastMilestoneTitle,
+                            date: Self.todayDateString()
+                        )
+                        ShareService.shareImage(from: card)
+                    }
+                    Button("All-Time Stats") {
+                        let card = AllTimeStatsCard(
+                            totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
+                            daysTracked: viewModel.daysTracked,
+                            bestDayFormatted: DistanceUnit.autoFormat(mm: viewModel.bestDayMM, system: viewModel.unitSystem),
+                            highestMilestone: viewModel.lastMilestoneTitle
+                        )
+                        ShareService.shareImage(from: card)
+                    }
+                    Button("Milestone") {
+                        guard let milestone = viewModel.lastReachedMilestone else { return }
+                        let card = MilestoneCard(
+                            title: milestone.title,
+                            message: milestone.body,
+                            totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem)
+                        )
+                        ShareService.shareImage(from: card)
+                    }
+                    .disabled(viewModel.lastReachedMilestone == nil)
+                }
+
+                Spacer()
+
                 Button("Reset") {
                     confirmAndRun(
                         title: "Reset all data?",
@@ -82,8 +116,6 @@ struct PopupView: View {
                         action: viewModel.resetAll
                     )
                 }
-
-                Spacer()
 
                 Button("Quit") {
                     confirmAndRun(
@@ -114,6 +146,12 @@ struct PopupView: View {
         if alert.runModal() == .alertFirstButtonReturn {
             action()
         }
+    }
+
+    private static func todayDateString() -> String {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        return f.string(from: Date())
     }
 
     private func tagline(forMM mm: Double) -> String {
