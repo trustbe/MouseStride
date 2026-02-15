@@ -1,0 +1,154 @@
+import AppKit
+import SwiftUI
+
+struct PopupView: View {
+    @ObservedObject var viewModel: MouseMeasureViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header with dynamic tagline
+            HStack(spacing: 8) {
+                Image(systemName: "computermouse.fill")
+                    .font(.title2)
+                    .foregroundStyle(.primary)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("MouseFitness")
+                        .font(.headline)
+                    Text(tagline(forMM: viewModel.totalDistanceMM))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Divider()
+
+            // Stats
+            StatRow(label: "This Session", mm: viewModel.sessionDistanceMM, icon: "play.circle")
+            StatRow(label: "Today", mm: viewModel.todayDistanceMM, icon: "calendar")
+            StatRow(label: "All Time", mm: viewModel.totalDistanceMM, icon: "infinity")
+
+            // Average speed
+            HStack(spacing: 6) {
+                Image(systemName: "gauge.with.needle")
+                    .foregroundStyle(.secondary)
+                    .frame(width: 16)
+                Text("Avg Speed")
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text(viewModel.formattedAvgSpeed)
+                    .monospacedDigit()
+                    .fontWeight(.medium)
+            }
+
+            Divider()
+
+            // Actions
+            HStack {
+                Menu("Reset...") {
+                    Button("Reset Session") {
+                        confirmAndRun(
+                            title: "Reset Session?",
+                            message: "Session distance and average speed will be cleared.",
+                            action: viewModel.resetSession
+                        )
+                    }
+                    Button("Reset Today") {
+                        confirmAndRun(
+                            title: "Reset Today?",
+                            message: "Today's distance counter will be reset to zero.",
+                            action: viewModel.resetToday
+                        )
+                    }
+                    Divider()
+                    Button("Reset All") {
+                        confirmAndRun(
+                            title: "Reset Everything?",
+                            message: "This will permanently delete all tracking history. This cannot be undone.",
+                            destructiveLabel: "Delete All Data",
+                            action: viewModel.resetAll
+                        )
+                    }
+                }
+
+                Spacer()
+
+                Button("Quit") {
+                    confirmAndRun(
+                        title: "Quit MouseFitness?",
+                        message: "All-time stats are saved. Session stats will be lost.",
+                        destructiveLabel: "Quit",
+                        action: viewModel.quit
+                    )
+                }
+            }
+        }
+        .padding()
+        .frame(width: 280)
+    }
+
+    private func confirmAndRun(
+        title: String,
+        message: String,
+        destructiveLabel: String = "Reset",
+        action: @escaping () -> Void
+    ) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: destructiveLabel)
+        alert.addButton(withTitle: "Cancel")
+        if alert.runModal() == .alertFirstButtonReturn {
+            action()
+        }
+    }
+
+    private func tagline(forMM mm: Double) -> String {
+        switch mm {
+        case ..<1:
+            return "Waiting for first moves..."
+        case ..<100:        // < 10 cm
+            return "Baby steps!"
+        case ..<1_000:      // < 1 m
+            return "Warming up the wrist"
+        case ..<10_000:     // < 10 m
+            return "Getting into the groove"
+        case ..<100_000:    // < 100 m
+            return "Your mouse is doing laps"
+        case ..<1_000_000:  // < 1 km
+            return "Training for a marathon"
+        case ..<5_000_000:  // < 5 km
+            return "Your mouse runs marathons!"
+        case ..<10_000_000: // < 10 km
+            return "Ultramarathon mouse!"
+        case ..<42_195_000: // < 42.195 km
+            return "Your mouse needs new shoes"
+        case ..<100_000_000: // < 100 km
+            return "Marathon completed!"
+        default:
+            return "Your mouse has seen the world"
+        }
+    }
+}
+
+struct StatRow: View {
+    let label: String
+    let mm: Double
+    var icon: String = ""
+
+    var body: some View {
+        HStack(spacing: 6) {
+            if !icon.isEmpty {
+                Image(systemName: icon)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 16)
+            }
+            Text(label)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(DistanceUnit.autoFormat(mm: mm))
+                .monospacedDigit()
+                .fontWeight(.medium)
+        }
+    }
+}
