@@ -47,15 +47,6 @@ final class MouseMeasureViewModel: ObservableObject {
         saveTimer?.invalidate()
     }
 
-    func resetToday() {
-        todayDistanceMM = 0
-        if pendingMM > 0 {
-            save()
-        }
-        persistence.resetToday()
-        updateStatusBar()
-    }
-
     func resetAll() {
         todayDistanceMM = 0
         totalDistanceMM = 0
@@ -68,6 +59,20 @@ final class MouseMeasureViewModel: ObservableObject {
     func quit() {
         save()
         NSApplication.shared.terminate(nil)
+    }
+
+    // MARK: - Share Data
+
+    var daysTracked: Int {
+        persistence.daysTracked()
+    }
+
+    var bestDayMM: Double {
+        persistence.bestDayMM()
+    }
+
+    var lastReachedMilestone: Milestone? {
+        milestones.lastReachedMilestone(totalMM: totalDistanceMM)
     }
 
     // MARK: - Timers

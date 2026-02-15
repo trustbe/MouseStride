@@ -68,4 +68,12 @@ final class PersistenceService {
         f.locale = Locale(identifier: "en_US_POSIX")
         return f
     }
+
+    func bestDayMM() -> Double {
+        dailyHistory.values.max() ?? 0
+    }
+
+    func daysTracked() -> Int {
+        dailyHistory.count
+    }
 }
