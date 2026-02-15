@@ -9,10 +9,20 @@ final class MouseMeasureViewModel: ObservableObject {
     @Published var totalDistanceMM: Double = 0
     @Published var statusBarText: String = "0 mm"
     @Published var formattedAvgSpeed: String = "0 mm/s"
+    @Published var lastMilestoneTitle: String? = nil
+    @Published var nextMilestoneText: String? = nil
+    @Published var unitSystem: UnitSystem {
+        didSet {
+            UserDefaults.standard.set(unitSystem.rawValue, forKey: "unitSystem")
+            updateStatusBar()
+            updateAvgSpeed()
+        }
+    }
 
     private let mouseTracker = MouseTracker()
     private let distanceCalculator = DistanceCalculator()
     private let persistence = PersistenceService()
+    private let milestones = MilestoneService()
 
     private var uiTimer: Timer?
     private var saveTimer: Timer?
@@ -22,10 +32,14 @@ final class MouseMeasureViewModel: ObservableObject {
     private var pendingMM: Double = 0
 
     init() {
+        let saved = UserDefaults.standard.string(forKey: "unitSystem") ?? UnitSystem.metric.rawValue
+        unitSystem = UnitSystem(rawValue: saved) ?? .metric
+
         totalDistanceMM = persistence.totalDistanceMM
         todayDistanceMM = persistence.todayDistanceMM()
         persistence.pruneOldEntries()
         updateStatusBar()
+        updateMilestoneInfo()
 
         mouseTracker.start()
         startTimers()
@@ -60,6 +74,7 @@ final class MouseMeasureViewModel: ObservableObject {
         pendingMM = 0
         sessionStartDate = Date()
         persistence.resetAll()
+        milestones.resetMilestones()
         updateStatusBar()
         updateAvgSpeed()
     }
@@ -72,14 +87,12 @@ final class MouseMeasureViewModel: ObservableObject {
     // MARK: - Timers
 
     private func startTimers() {
-        // UI update every 1 second
         uiTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.updateFromTracker()
             }
         }
 
-        // Persist every 30 seconds
         saveTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.save()
@@ -99,32 +112,57 @@ final class MouseMeasureViewModel: ObservableObject {
 
         updateStatusBar()
         updateAvgSpeed()
+        updateMilestoneInfo()
+        milestones.checkMilestones(totalMM: totalDistanceMM)
+    }
+
+    private func updateMilestoneInfo() {
+        if let last = milestones.lastReachedMilestone(totalMM: totalDistanceMM) {
+            lastMilestoneTitle = last.title
+        } else {
+            lastMilestoneTitle = nil
+        }
+        if let next = milestones.nextMilestone(totalMM: totalDistanceMM) {
+            let remaining = next.distanceMM - totalDistanceMM
+            nextMilestoneText = "\(next.title.replacingOccurrences(of: "!", with: "")) in \(DistanceUnit.autoFormat(mm: remaining, system: unitSystem))"
+        } else {
+            nextMilestoneText = nil
+        }
     }
 
     private func updateStatusBar() {
-        statusBarText = DistanceUnit.autoFormat(mm: totalDistanceMM)
+        statusBarText = DistanceUnit.autoFormat(mm: totalDistanceMM, system: unitSystem)
     }
 
     private func updateAvgSpeed() {
         let elapsed = Date().timeIntervalSince(sessionStartDate)
         guard elapsed > 0 else {
-            formattedAvgSpeed = "0 mm/s"
+            formattedAvgSpeed = unitSystem == .metric ? "0 mm/s" : "0 in/s"
             return
         }
         let mmPerSec = sessionDistanceMM / elapsed
-        if mmPerSec >= 1_000 {
-            formattedAvgSpeed = String(format: "%.1f m/s", mmPerSec / 1_000)
-        } else if mmPerSec >= 10 {
-            formattedAvgSpeed = String(format: "%.1f cm/s", mmPerSec / 10)
-        } else {
-            formattedAvgSpeed = String(format: "%.1f mm/s", mmPerSec)
+        switch unitSystem {
+        case .metric:
+            if mmPerSec >= 1_000 {
+                formattedAvgSpeed = String(format: "%.1f m/s", mmPerSec / 1_000)
+            } else if mmPerSec >= 10 {
+                formattedAvgSpeed = String(format: "%.1f cm/s", mmPerSec / 10)
+            } else {
+                formattedAvgSpeed = String(format: "%.1f mm/s", mmPerSec)
+            }
+        case .imperial:
+            let inPerSec = mmPerSec / 25.4
+            if inPerSec >= 12 {
+                formattedAvgSpeed = String(format: "%.1f ft/s", inPerSec / 12)
+            } else {
+                formattedAvgSpeed = String(format: "%.1f in/s", inPerSec)
+            }
         }
     }
 
     // MARK: - Persistence (drain-and-fold)
 
     private func save() {
-        // Drain pending mm into persistence
         if pendingMM > 0 {
             persistence.totalDistanceMM += pendingMM
             persistence.addToToday(mm: pendingMM)

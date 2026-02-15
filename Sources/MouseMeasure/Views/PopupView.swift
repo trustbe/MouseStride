@@ -11,7 +11,7 @@ struct PopupView: View {
                 Image(systemName: "computermouse.fill")
                     .font(.title2)
                     .foregroundStyle(.primary)
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text("MouseFitness")
                         .font(.headline)
                     Text(tagline(forMM: viewModel.totalDistanceMM))
@@ -20,12 +20,38 @@ struct PopupView: View {
                 }
             }
 
+            // Milestone badges
+            if viewModel.lastMilestoneTitle != nil || viewModel.nextMilestoneText != nil {
+                VStack(alignment: .leading, spacing: 3) {
+                    if let last = viewModel.lastMilestoneTitle {
+                        HStack(spacing: 4) {
+                            Image(systemName: "trophy.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.yellow)
+                            Text(last)
+                                .font(.caption)
+                                .fontWeight(.medium)
+                        }
+                    }
+                    if let next = viewModel.nextMilestoneText {
+                        HStack(spacing: 4) {
+                            Image(systemName: "flag.checkered")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            Text(next)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+
             Divider()
 
             // Stats
-            StatRow(label: "This Session", mm: viewModel.sessionDistanceMM, icon: "play.circle")
-            StatRow(label: "Today", mm: viewModel.todayDistanceMM, icon: "calendar")
-            StatRow(label: "All Time", mm: viewModel.totalDistanceMM, icon: "infinity")
+            StatRow(label: "This Session", value: DistanceUnit.autoFormat(mm: viewModel.sessionDistanceMM, system: viewModel.unitSystem), icon: "play.circle")
+            StatRow(label: "Today", value: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem), icon: "calendar")
+            StatRow(label: "All Time", value: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem), icon: "infinity")
 
             // Average speed
             HStack(spacing: 6) {
@@ -42,20 +68,38 @@ struct PopupView: View {
 
             Divider()
 
+            // Unit system picker
+            HStack(spacing: 6) {
+                Image(systemName: "ruler")
+                    .foregroundStyle(.secondary)
+                    .frame(width: 16)
+                Text("Units")
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Picker("", selection: $viewModel.unitSystem) {
+                    Text("Metric").tag(UnitSystem.metric)
+                    Text("Imperial").tag(UnitSystem.imperial)
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 150)
+            }
+
+            Divider()
+
             // Actions
             HStack {
                 Menu("Reset...") {
                     Button("Reset Session") {
                         confirmAndRun(
                             title: "Reset Session?",
-                            message: "Session distance and average speed will be cleared.",
+                            message: "Your mouse worked so hard this session... all that effort, gone. Like tears in rain.",
                             action: viewModel.resetSession
                         )
                     }
                     Button("Reset Today") {
                         confirmAndRun(
                             title: "Reset Today?",
-                            message: "Today's distance counter will be reset to zero.",
+                            message: "Today's progress will vanish. Your mouse won't remember any of this.",
                             action: viewModel.resetToday
                         )
                     }
@@ -63,7 +107,7 @@ struct PopupView: View {
                     Button("Reset All") {
                         confirmAndRun(
                             title: "Reset Everything?",
-                            message: "This will permanently delete all tracking history. This cannot be undone.",
+                            message: "Every millimeter. Every kilometer. All gone forever. Your mouse will have an existential crisis.",
                             destructiveLabel: "Delete All Data",
                             action: viewModel.resetAll
                         )
@@ -75,7 +119,7 @@ struct PopupView: View {
                 Button("Quit") {
                     confirmAndRun(
                         title: "Quit MouseFitness?",
-                        message: "All-time stats are saved. Session stats will be lost.",
+                        message: "Don't worry, your mouse's lifetime achievements are saved. But this session? History.",
                         destructiveLabel: "Quit",
                         action: viewModel.quit
                     )
@@ -133,7 +177,7 @@ struct PopupView: View {
 
 struct StatRow: View {
     let label: String
-    let mm: Double
+    let value: String
     var icon: String = ""
 
     var body: some View {
@@ -146,7 +190,7 @@ struct StatRow: View {
             Text(label)
                 .foregroundStyle(.secondary)
             Spacer()
-            Text(DistanceUnit.autoFormat(mm: mm))
+            Text(value)
                 .monospacedDigit()
                 .fontWeight(.medium)
         }
