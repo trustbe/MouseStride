@@ -1,5 +1,5 @@
-APP_NAME = MouseFitness
-TARGET_NAME = MouseMeasure
+APP_NAME = MouseStride
+TARGET_NAME = MouseStride
 BUILD_DIR = .build/release
 APP_BUNDLE = $(APP_NAME).app
 CONTENTS = $(APP_BUNDLE)/Contents
@@ -13,7 +13,7 @@ build:
 bundle: build
 	mkdir -p $(MACOS)
 	cp $(BUILD_DIR)/$(TARGET_NAME) $(MACOS)/$(APP_NAME)
-	cp Sources/MouseMeasure/App/Info.plist $(CONTENTS)/Info.plist
+	cp Sources/MouseStride/App/Info.plist $(CONTENTS)/Info.plist
 
 run: bundle
 	open $(APP_BUNDLE)

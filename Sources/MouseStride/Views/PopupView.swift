@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 struct PopupView: View {
-    @ObservedObject var viewModel: MouseMeasureViewModel
+    @ObservedObject var viewModel: MouseStrideViewModel
     @State private var isHoveringSync = false
 
     var body: some View {

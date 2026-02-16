@@ -1,8 +1,8 @@
 import SwiftUI
 
 @main
-struct MouseMeasureApp: App {
-    @StateObject private var viewModel = MouseMeasureViewModel()
+struct MouseStrideApp: App {
+    @StateObject private var viewModel = MouseStrideViewModel()
 
     var body: some Scene {
         MenuBarExtra {

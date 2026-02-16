@@ -3,7 +3,7 @@ import Combine
 import SwiftUI
 
 @MainActor
-final class MouseMeasureViewModel: ObservableObject {
+final class MouseStrideViewModel: ObservableObject {
     @Published var todayDistanceMM: Double = 0
     @Published var totalDistanceMM: Double = 0
     @Published var statusBarText: String = "0 mm"

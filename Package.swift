@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "MouseMeasure",
+    name: "MouseStride",
     platforms: [.macOS(.v13)],
     targets: [
         .executableTarget(
-            name: "MouseMeasure",
-            path: "Sources/MouseMeasure",
+            name: "MouseStride",
+            path: "Sources/MouseStride",
             exclude: ["App/Info.plist"]
         )
     ]
