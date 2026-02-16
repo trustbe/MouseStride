@@ -1,0 +1,50 @@
+name: Release Windows
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Extract version
+        id: version
+        shell: bash
+        run: echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Build release
+        working-directory: daemon-windows
+        run: cargo build --release
+
+      - name: Install cargo-wix
+        run: cargo install cargo-wix
+
+      - name: Initialize WiX
+        working-directory: daemon-windows
+        run: cargo wix init --force
+
+      - name: Build MSI
+        working-directory: daemon-windows
+        run: cargo wix --no-build --nocapture
+
+      - name: Upload MSI to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          MSI=$(ls daemon-windows/target/wix/*.msi | head -1)
+          VERSION=${{ steps.version.outputs.tag }}
+          gh release upload "$VERSION" "$MSI" --clobber || \
+          gh release create "$VERSION" "$MSI" \
+            --title "MouseStride $VERSION" \
+            --generate-notes
