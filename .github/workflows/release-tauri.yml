@@ -3,6 +3,7 @@ name: Release Tauri
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -66,6 +67,7 @@ jobs:
         run: npx tauri build
 
       - name: Upload artifacts to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
