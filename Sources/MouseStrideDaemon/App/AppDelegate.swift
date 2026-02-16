@@ -1,5 +1,6 @@
 import AppKit
 import MouseStrideCore
+import ServiceManagement
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
@@ -31,11 +32,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         todayMM = persistence.todayDistanceMM()
         persistence.pruneOldEntries()
 
+        registerLoginItem()
         setupStatusItem()
         mouseTracker.start()
         startTimers()
         setupTerminationObserver()
         syncToDashboard()
+    }
+
+    // MARK: - Login Item
+
+    private func registerLoginItem() {
+        try? SMAppService.mainApp.register()
     }
 
     // MARK: - Status Item
