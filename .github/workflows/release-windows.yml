@@ -33,6 +33,23 @@ jobs:
         working-directory: daemon-windows
         run: cargo wix init --force
 
+      - name: Add launch-after-install to WiX config
+        working-directory: daemon-windows
+        shell: pwsh
+        run: |
+          $wxs = Get-Content wix\main.wxs -Raw
+          # Add CustomAction to launch app after install
+          $customAction = @'
+          <CustomAction Id="LaunchApp" Directory="APPLICATIONFOLDER" ExeCommand="[APPLICATIONFOLDER]bin\mousestride.exe" Execute="immediate" Return="asyncNoWait" />
+          <InstallExecuteSequence>
+            <Custom Action="LaunchApp" After="InstallFinalize">NOT Installed OR REINSTALL</Custom>
+          </InstallExecuteSequence>
+          '@
+          # Insert before closing </Product> tag
+          $wxs = $wxs -replace '</Product>', "$customAction`n    </Product>"
+          Set-Content wix\main.wxs $wxs
+          Write-Host "Added launch-after-install action"
+
       - name: Build MSI
         working-directory: daemon-windows
         run: cargo wix --no-build --nocapture
