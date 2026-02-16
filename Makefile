@@ -15,8 +15,10 @@ build:
 
 bundle: build
 	mkdir -p $(MACOS)
+	mkdir -p $(CONTENTS)/Resources
 	cp $(BUILD_DIR)/$(TARGET_NAME) $(MACOS)/$(APP_NAME)
 	cp Sources/MouseStride/App/Info.plist $(CONTENTS)/Info.plist
+	cp Sources/MouseStride/Resources/MouseStride.icns $(CONTENTS)/Resources/MouseStride.icns
 
 run: bundle
 	open $(APP_BUNDLE)
@@ -32,8 +34,10 @@ build-universal:
 
 bundle-universal: build-universal
 	mkdir -p $(MACOS)
+	mkdir -p $(CONTENTS)/Resources
 	cp $(UNIVERSAL_BINARY) $(MACOS)/$(APP_NAME)
 	cp Sources/MouseStride/App/Info.plist $(CONTENTS)/Info.plist
+	cp Sources/MouseStride/Resources/MouseStride.icns $(CONTENTS)/Resources/MouseStride.icns
 
 dmg: bundle-universal
 	hdiutil create -volname $(APP_NAME) -srcfolder $(APP_BUNDLE) -ov -format UDZO $(DMG_NAME)

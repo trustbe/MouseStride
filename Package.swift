@@ -8,7 +8,7 @@ let package = Package(
         .executableTarget(
             name: "MouseStride",
             path: "Sources/MouseStride",
-            exclude: ["App/Info.plist"]
+            exclude: ["App/Info.plist", "Resources"]
         )
     ]
 )
