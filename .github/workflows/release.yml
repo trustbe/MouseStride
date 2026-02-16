@@ -19,7 +19,7 @@ jobs:
         run: echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
 
       - name: Build Daemon ZIP
-        run: make daemon-zip VERSION=${{ steps.version.outputs.tag }}
+        run: make zip VERSION=${{ steps.version.outputs.tag }}
 
       - name: Verify universal binary
         run: lipo -info .build/universal/MouseStrideDaemon

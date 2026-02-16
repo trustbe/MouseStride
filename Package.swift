@@ -10,12 +10,6 @@ let package = Package(
             path: "Sources/MouseStrideCore"
         ),
         .executableTarget(
-            name: "MouseStride",
-            dependencies: ["MouseStrideCore"],
-            path: "Sources/MouseStride",
-            exclude: ["App/Info.plist", "Resources"]
-        ),
-        .executableTarget(
             name: "MouseStrideDaemon",
             dependencies: ["MouseStrideCore"],
             path: "Sources/MouseStrideDaemon",
