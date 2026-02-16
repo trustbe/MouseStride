@@ -11,11 +11,8 @@ final class MouseMeasureViewModel: ObservableObject {
     @Published var lastMilestoneIcon: String? = nil
     @Published var nextMilestoneText: String? = nil
     @Published var nextMilestoneIcon: String? = nil
-    @Published var unitSystem: UnitSystem {
-        didSet {
-            UserDefaults.standard.set(unitSystem.rawValue, forKey: "unitSystem")
-            updateStatusBar()
-        }
+    var unitSystem: UnitSystem {
+        Locale.current.measurementSystem == .metric ? .metric : .imperial
     }
 
     private let mouseTracker = MouseTracker()
@@ -30,9 +27,6 @@ final class MouseMeasureViewModel: ObservableObject {
     private var pendingMM: Double = 0
 
     init() {
-        let saved = UserDefaults.standard.string(forKey: "unitSystem") ?? UnitSystem.metric.rawValue
-        unitSystem = UnitSystem(rawValue: saved) ?? .metric
-
         totalDistanceMM = persistence.totalDistanceMM
         todayDistanceMM = persistence.todayDistanceMM()
         persistence.pruneOldEntries()

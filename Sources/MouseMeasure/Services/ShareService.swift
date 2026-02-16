@@ -3,15 +3,41 @@ import SwiftUI
 
 @MainActor
 enum ShareService {
-    static func shareImage<V: View>(from view: V) {
-        let renderer = ImageRenderer(content: view)
-        renderer.scale = 2.0  // 2x for retina → 1200x630 actual pixels
+    private static let dashboardURL = "https://username.github.io/MouseStride"
 
-        guard let nsImage = renderer.nsImage else { return }
+    static func shareText(
+        todayFormatted: String,
+        totalFormatted: String,
+        daysTracked: Int,
+        bestDayFormatted: String,
+        milestone: Milestone?,
+        todayMM: Double,
+        totalMM: Double,
+        bestDayMM: Double
+    ) {
+        DashboardService.submit(
+            todayMM: todayMM,
+            totalMM: totalMM,
+            bestDayMM: bestDayMM,
+            daysTracked: daysTracked,
+            milestone: milestone?.title
+        )
 
-        let picker = NSSharingServicePicker(items: [nsImage])
+        var lines: [String] = []
 
-        // Find the key window's content view to anchor the share sheet
+        if let m = milestone {
+            lines.append("\(m.title) \u{1F3C6}")
+            lines.append("")
+        }
+
+        lines.append("\u{1F5B1}\u{FE0F} My mouse traveled \(todayFormatted) today!")
+        lines.append("\u{1F4CA} Total: \(totalFormatted) \u{00B7} \(daysTracked) \(daysTracked == 1 ? "day" : "days") \u{00B7} Best: \(bestDayFormatted)")
+        lines.append("")
+        lines.append("Track your mouse \u{2192} \(dashboardURL)")
+
+        let text = lines.joined(separator: "\n")
+        let picker = NSSharingServicePicker(items: [text])
+
         guard let contentView = NSApp.keyWindow?.contentView else { return }
         picker.show(relativeTo: contentView.bounds, of: contentView, preferredEdge: .minY)
     }

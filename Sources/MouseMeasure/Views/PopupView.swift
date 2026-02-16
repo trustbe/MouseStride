@@ -52,22 +52,20 @@ struct PopupView: View {
             StatRow(label: "Today", value: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem), icon: "calendar")
             StatRow(label: "All Time", value: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem), icon: "infinity")
 
-            Divider()
-
-            // Unit system picker
+            // Launch at login
             HStack(spacing: 6) {
-                Image(systemName: "ruler")
+                Image(systemName: "sunrise")
                     .foregroundStyle(.secondary)
                     .frame(width: 16)
-                Text("Units")
+                Text("Launch at Login")
                     .foregroundStyle(.secondary)
                 Spacer()
-                Picker("", selection: $viewModel.unitSystem) {
-                    Text("Metric").tag(UnitSystem.metric)
-                    Text("Imperial").tag(UnitSystem.imperial)
-                }
-                .pickerStyle(.segmented)
-                .frame(width: 150)
+                Toggle("", isOn: Binding(
+                    get: { LaunchAtLoginService.isEnabled },
+                    set: { _ in LaunchAtLoginService.toggle() }
+                ))
+                .toggleStyle(.switch)
+                .controlSize(.mini)
             }
 
             Divider()
@@ -75,28 +73,19 @@ struct PopupView: View {
             // Actions
             HStack {
                 Button("Share") {
-                    let card = ShareCard(
+                    ShareService.shareText(
                         todayFormatted: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem),
                         totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
-                        comparison: RealWorldComparison.compare(mm: viewModel.todayDistanceMM),
                         daysTracked: viewModel.daysTracked,
                         bestDayFormatted: DistanceUnit.autoFormat(mm: viewModel.bestDayMM, system: viewModel.unitSystem),
                         milestone: viewModel.lastReachedMilestone,
-                        date: Self.todayDateString()
+                        todayMM: viewModel.todayDistanceMM,
+                        totalMM: viewModel.totalDistanceMM,
+                        bestDayMM: viewModel.bestDayMM
                     )
-                    ShareService.shareImage(from: card)
                 }
 
                 Spacer()
-
-                Button("Reset") {
-                    confirmAndRun(
-                        title: "Reset all data?",
-                        message: "Every millimeter, every milestone - back to zero. Your mouse will have an existential crisis.",
-                        destructiveLabel: "Delete All Data",
-                        action: viewModel.resetAll
-                    )
-                }
 
                 Button("Quit") {
                     confirmAndRun(
@@ -127,12 +116,6 @@ struct PopupView: View {
         if alert.runModal() == .alertFirstButtonReturn {
             action()
         }
-    }
-
-    private static func todayDateString() -> String {
-        let f = DateFormatter()
-        f.dateStyle = .medium
-        return f.string(from: Date())
     }
 
     private func tagline(forMM mm: Double) -> String {
