@@ -130,6 +130,40 @@
 
         footer a { color: #8a8078; }
 
+        .download-cta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #2a2520;
+            color: #faf9f7;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 2rem;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .download-cta:hover { opacity: 0.92; }
+
+        .download-cta-text {
+            flex: 1;
+        }
+
+        .download-cta-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .download-cta-sub {
+            font-size: 0.75rem;
+            color: #a89e95;
+        }
+
+        .download-cta-arrow {
+            font-size: 1.2rem;
+            color: #b89c3c;
+        }
+
         .share-bar {
             display: none;
             flex-direction: column;
@@ -240,6 +274,20 @@
         <h2>Leaderboard</h2>
         <div id="leaderboard"><div class="empty">Loading...</div></div>
     </section>
+
+    <a class="download-cta" href="./">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 32 32" fill="#b89c3c">
+            <path d="M4 2L18 16h-6l3.5 9.5-3.5 1.3-3.5-9.3L4 22V2z"/>
+            <line x1="20" y1="5" x2="28" y2="5" stroke="#b89c3c" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="21" y1="10" x2="27" y2="10" stroke="#b89c3c" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="22" y1="15" x2="26" y2="15" stroke="#b89c3c" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <div class="download-cta-text">
+            <div class="download-cta-title">Track your own mouse distance</div>
+            <div class="download-cta-sub">Free &middot; macOS &middot; Open source</div>
+        </div>
+        <span class="download-cta-arrow">&rarr;</span>
+    </a>
 
     <div class="share-bar" id="share-bar">
         <div class="share-context" id="share-context"><span id="share-context-text">Share your rank:</span></div>
