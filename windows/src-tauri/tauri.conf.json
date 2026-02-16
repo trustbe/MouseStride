@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicktomlin/tauri-settings-schema/main/src/tauri.conf.schema.json",
+  "productName": "MouseStride",
+  "version": "0.1.0",
+  "identifier": "com.mousestride.app",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "MouseStride",
+        "width": 300,
+        "height": 440,
+        "resizable": false,
+        "decorations": false,
+        "skipTaskbar": true,
+        "visible": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "label": "main"
+      }
+    ],
+    "trayIcon": {
+      "id": "main-tray",
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true,
+      "tooltip": "MouseStride - 0 mm"
+    },
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' https://ygtemljaowgiypcberhz.supabase.co https://trustbe.github.io"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["msi"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  },
+  "plugins": {
+    "autostart": {
+      "macOSExtraSetup": false
+    }
+  }
+}
