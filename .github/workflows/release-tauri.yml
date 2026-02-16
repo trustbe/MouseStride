@@ -64,7 +64,7 @@ jobs:
         run: echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
 
       - name: Build Tauri app
-        run: npx tauri build
+        run: npm run tauri -- build
 
       - name: Upload artifacts to GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
