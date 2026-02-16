@@ -3,6 +3,7 @@ import SwiftUI
 
 struct PopupView: View {
     @ObservedObject var viewModel: MouseMeasureViewModel
+    @State private var isHoveringSync = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -79,15 +80,26 @@ struct PopupView: View {
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .foregroundStyle(.secondary)
                         .frame(width: 16)
-                    Button("Community Sync") {
+                    Button {
                         viewModel.submitToDashboard()
                         let name = AnonymousNameService.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
                         if let url = URL(string: "https://trustbe.github.io/MouseStride/?highlight=\(name)") {
                             NSWorkspace.shared.open(url)
                         }
+                    } label: {
+                        Text("Community Sync")
+                            .underline(isHoveringSync)
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.blue)
+                    .onHover { hovering in
+                        isHoveringSync = hovering
+                        if hovering {
+                            NSCursor.pointingHand.push()
+                        } else {
+                            NSCursor.pop()
+                        }
+                    }
                     Spacer()
                     Toggle("", isOn: $viewModel.autoShareEnabled)
                         .toggleStyle(.switch)
