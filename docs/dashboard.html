@@ -391,6 +391,16 @@
 
         load();
 
+        // Shorten default share URL in background
+        (async function() {
+            const short = await shortenURL(shareURL);
+            if (short !== shareURL) {
+                shareURL = short;
+                postURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(short);
+                linkURL = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(short);
+            }
+        })();
+
         (function() {
             const name = sessionStorage.getItem('mousestride_highlight');
             if (!name) return;
