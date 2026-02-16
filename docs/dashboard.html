@@ -165,7 +165,7 @@
         }
 
         .share-bar {
-            display: none;
+            display: flex;
             flex-direction: column;
             gap: 0.6rem;
             background: #fef9ec;
@@ -404,8 +404,17 @@
             return d.innerHTML;
         }
 
-        let shareURL = '';
+        let shareURL = window.location.origin + window.location.pathname;
         const shortURLCache = {};
+
+        // Initialize generic share links for all visitors
+        (function() {
+            const url = window.location.origin + window.location.pathname;
+            const text = 'See how far everyone\'s mouse has traveled!';
+            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+            document.getElementById('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+            document.getElementById('share-context-text').textContent = 'Share the leaderboard:';
+        })();
 
         async function shortenURL(url) {
             if (shortURLCache[url]) return shortURLCache[url];
@@ -436,7 +445,6 @@
                 `You're <strong>#${rank}</strong> with <strong>${esc(distance)}</strong> — share it!`;
 
             updateShareLinks(url, distance);
-            document.getElementById('share-bar').style.display = 'flex';
 
             shortenURL(url).then(short => {
                 shareURL = short;
