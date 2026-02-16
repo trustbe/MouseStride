@@ -25,5 +25,13 @@ windows = { version = "0.58", features = [
     "Win32_System_Power",
 ] }
 
+[target.'cfg(target_os = "linux")'.dependencies]
+rdev = "0.5"
+x11 = "2.21"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-graphics = "0.25"
+core-foundation = "0.10"
+
 [build-dependencies]
 tauri-build = "2"

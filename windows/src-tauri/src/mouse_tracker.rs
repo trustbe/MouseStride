@@ -1,6 +1,5 @@
 use parking_lot::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
 use std::thread;
 
 static ACCUMULATED_PIXELS: Mutex<f64> = Mutex::new(0.0);
@@ -85,9 +84,102 @@ fn run_hook_loop() {
     }
 }
 
-#[cfg(not(windows))]
+#[cfg(target_os = "linux")]
 fn run_hook_loop() {
-    // Stub for non-Windows builds (development only)
+    use rdev::{listen, Event, EventType};
+
+    let callback = move |event: Event| {
+        if let EventType::MouseMove { x, y } = event.event_type {
+            let cx = x as i32;
+            let cy = y as i32;
+
+            let mut prev_x = PREVIOUS_X.lock();
+            let mut prev_y = PREVIOUS_Y.lock();
+
+            if let (Some(px), Some(py)) = (*prev_x, *prev_y) {
+                let dx = (cx - px) as f64;
+                let dy = (cy - py) as f64;
+                let distance = (dx * dx + dy * dy).sqrt();
+
+                if distance <= TELEPORT_THRESHOLD {
+                    *ACCUMULATED_PIXELS.lock() += distance;
+                }
+            }
+
+            *prev_x = Some(cx);
+            *prev_y = Some(cy);
+        }
+    };
+
+    if let Err(e) = listen(callback) {
+        eprintln!("rdev listen error: {:?}", e);
+    }
+
+    RUNNING.store(false, Ordering::SeqCst);
+}
+
+#[cfg(target_os = "macos")]
+fn run_hook_loop() {
+    use core_graphics::event::{CGEventTap, CGEventTapLocation, CGEventTapPlacement, CGEventTapOptions, CGEventType, CallbackResult};
+    use core_foundation::runloop::CFRunLoop;
+
+    let event_types = vec![
+        CGEventType::MouseMoved,
+        CGEventType::LeftMouseDragged,
+        CGEventType::RightMouseDragged,
+    ];
+
+    let tap = CGEventTap::new(
+        CGEventTapLocation::HID,
+        CGEventTapPlacement::HeadInsertEventTap,
+        CGEventTapOptions::ListenOnly,
+        event_types,
+        |_proxy, _event_type, event| {
+            let location = event.location();
+            let cx = location.x as i32;
+            let cy = location.y as i32;
+
+            let mut prev_x = PREVIOUS_X.lock();
+            let mut prev_y = PREVIOUS_Y.lock();
+
+            if let (Some(px), Some(py)) = (*prev_x, *prev_y) {
+                let dx = (cx - px) as f64;
+                let dy = (cy - py) as f64;
+                let distance = (dx * dx + dy * dy).sqrt();
+
+                if distance <= TELEPORT_THRESHOLD {
+                    *ACCUMULATED_PIXELS.lock() += distance;
+                }
+            }
+
+            *prev_x = Some(cx);
+            *prev_y = Some(cy);
+
+            CallbackResult::Keep
+        },
+    );
+
+    match tap {
+        Ok(tap) => {
+            unsafe {
+                let loop_source = tap.mach_port().create_runloop_source(0).expect("failed to create run loop source");
+                let run_loop = CFRunLoop::get_current();
+                run_loop.add_source(&loop_source, core_foundation::runloop::kCFRunLoopCommonModes);
+                tap.enable();
+                CFRunLoop::run_current();
+            }
+        }
+        Err(()) => {
+            eprintln!("Failed to create CGEventTap - ensure Accessibility permissions are granted");
+        }
+    }
+
+    RUNNING.store(false, Ordering::SeqCst);
+}
+
+#[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
+fn run_hook_loop() {
+    // Stub for unsupported platforms
     use std::time::Duration;
     while RUNNING.load(Ordering::SeqCst) {
         thread::sleep(Duration::from_secs(1));
