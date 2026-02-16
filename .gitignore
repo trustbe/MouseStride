@@ -1,7 +1,14 @@
+# Swift
 .build/
 .swiftpm/
 *.app/
 *.xcodeproj/
 xcuserdata/
+
+# Rust
+target/
+daemon-windows/Cargo.lock
+
+# macOS
 .DS_Store
 *.dmg
