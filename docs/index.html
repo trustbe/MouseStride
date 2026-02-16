@@ -543,8 +543,8 @@
             color: var(--text-faint);
         }
 
-        /* Share bar */
-        .share-bar {
+        /* Action bar */
+        .action-bar {
             display: flex;
             flex-direction: column;
             gap: 0.6rem;
@@ -557,19 +557,19 @@
             font-size: 0.85rem;
         }
 
-        .share-context {
+        .action-context {
             font-size: 0.85rem;
             color: #5a524a;
         }
 
-        .share-buttons {
+        .action-buttons {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             flex-wrap: wrap;
         }
 
-        .share-btn {
+        .action-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
@@ -584,33 +584,33 @@
             transition: opacity 0.15s;
         }
 
-        .share-btn--x {
+        .action-btn--post {
             background: #14171a;
             color: #fff;
         }
 
-        .share-btn--fb {
+        .action-btn--link {
             background: #1877F2;
             color: #fff;
         }
 
-        .share-btn--x:hover,
-        .share-btn--fb:hover {
+        .action-btn--post:hover,
+        .action-btn--link:hover {
             opacity: 0.88;
         }
 
-        .share-btn--copy {
+        .action-btn--clip {
             background: var(--white);
             color: var(--text);
             border: 1px solid var(--border);
             transition: border-color 0.15s;
         }
 
-        .share-btn--copy:hover {
+        .action-btn--clip:hover {
             border-color: var(--gold);
         }
 
-        .share-copied {
+        .action-copied {
             font-size: 0.8rem;
             color: var(--gold);
             font-weight: 500;
@@ -618,7 +618,7 @@
             transition: opacity 0.3s;
         }
 
-        .share-copied.visible {
+        .action-copied.visible {
             opacity: 1;
         }
 
@@ -863,23 +863,23 @@
         </div>
     </div>
 
-    <!-- Share -->
-    <div class="share-bar" id="share-bar">
-        <div class="share-context">Share MouseStride:</div>
-        <div class="share-buttons">
-            <a class="share-btn share-btn--x" id="share-x" href="#" target="_blank" rel="noopener">
+    <!-- Action bar -->
+    <div class="action-bar" id="action-bar">
+        <div class="action-context">Share MouseStride:</div>
+        <div class="action-buttons">
+            <a class="action-btn action-btn--post" id="action-post" href="#" target="_blank" rel="noopener">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                 Post on X
             </a>
-            <a class="share-btn share-btn--fb" id="share-fb" href="#" target="_blank" rel="noopener">
+            <a class="action-btn action-btn--link" id="action-link" href="#" target="_blank" rel="noopener">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 Share on Facebook
             </a>
-            <button class="share-btn share-btn--copy" id="share-copy" onclick="copyShareLink()">
+            <button class="action-btn action-btn--clip" id="action-clip" onclick="copyShareLink()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
                 Copy link
             </button>
-            <span class="share-copied" id="share-copied">Copied!</span>
+            <span class="action-copied" id="action-copied">Copied!</span>
         </div>
     </div>
 
@@ -1008,8 +1008,8 @@
         const shareText = 'Your mouse runs marathons. Track how far your cursor travels!';
 
         function updateShareLinks(url) {
-            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
-            document.getElementById('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+            document.getElementById('action-post').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
+            document.getElementById('action-link').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
         }
 
         updateShareLinks(shareURL);
@@ -1030,7 +1030,7 @@
 
         function copyShareLink() {
             navigator.clipboard.writeText(shareText + ' ' + shareURL);
-            const el = document.getElementById('share-copied');
+            const el = document.getElementById('action-copied');
             el.classList.add('visible');
             setTimeout(() => { el.classList.remove('visible'); }, 2000);
         }
