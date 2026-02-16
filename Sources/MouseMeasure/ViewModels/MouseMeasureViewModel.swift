@@ -111,7 +111,7 @@ final class MouseMeasureViewModel: ObservableObject {
         autoShareTimer = nil
     }
 
-    private func submitToDashboard() {
+    func submitToDashboard() {
         DashboardService.submit(
             todayMM: todayDistanceMM,
             totalMM: totalDistanceMM,

@@ -12,11 +12,13 @@ struct PopupView: View {
                     .font(.title2)
                     .foregroundStyle(.primary)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("MouseStride")
-                        .font(.headline)
-                    Text(AnonymousNameService.name)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text("MouseStride")
+                            .font(.headline)
+                        Text("(\(AnonymousNameService.name))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                     Text(tagline(forMM: viewModel.totalDistanceMM))
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -77,8 +79,15 @@ struct PopupView: View {
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .foregroundStyle(.secondary)
                         .frame(width: 16)
-                    Text("Community Sync")
-                        .foregroundStyle(.secondary)
+                    Button("Community Sync") {
+                        viewModel.submitToDashboard()
+                        let name = AnonymousNameService.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                        if let url = URL(string: "https://trustbe.github.io/MouseStride/?highlight=\(name)") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.blue)
                     Spacer()
                     Toggle("", isOn: $viewModel.autoShareEnabled)
                         .toggleStyle(.switch)

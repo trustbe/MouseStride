@@ -97,19 +97,11 @@
             font-variant-numeric: tabular-nums;
         }
 
-        .feed-item {
-            padding: 0.4rem 0;
-            font-size: 0.875rem;
-            color: #5a534d;
-            border-bottom: 1px solid #f0ece8;
-        }
-
-        .feed-name { font-weight: 600; color: #2a2520; }
-
-        .feed-time {
-            font-size: 0.7rem;
-            color: #a89e95;
-            float: right;
+        .lb-row.highlight {
+            background: #fef9ec;
+            border-radius: 6px;
+            padding: 0.5rem 0.4rem;
+            margin: 0 -0.4rem;
         }
 
         .empty {
@@ -132,7 +124,7 @@
     </style>
 </head>
 <body>
-    <h1>&#x1F5B1;&#xFE0F; MouseStride</h1>
+    <h1><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" style="vertical-align: -0.25em;"><path d="M6 2L20 16h-6.5l3.8 9.5-3.6 1.4L9.9 17.5 6 21.5V2z"/><path d="M22 8l2.5-2.5M22 13h3.5M25.5 18l-2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg> MouseStride</h1>
     <p class="subtitle">Community mouse distance tracker</p>
 
     <div class="stats-bar">
@@ -153,11 +145,6 @@
     <section>
         <h2>Leaderboard</h2>
         <div id="leaderboard"><div class="empty">Loading...</div></div>
-    </section>
-
-    <section>
-        <h2>Recent Activity</h2>
-        <div id="feed"><div class="empty">Loading...</div></div>
     </section>
 
     <footer>
@@ -196,12 +183,14 @@
         }
 
         async function load() {
+            const params = new URLSearchParams(window.location.search);
+            const highlightName = params.get('highlight');
+
             try {
                 const entries = await query('entries?order=created_at.desc&limit=200');
 
                 if (!entries.length) {
                     document.getElementById('leaderboard').innerHTML = '<div class="empty">No entries yet. Be the first!</div>';
-                    document.getElementById('feed').innerHTML = '<div class="empty">Share from MouseStride to appear here.</div>';
                     return;
                 }
 
@@ -223,26 +212,19 @@
                 latest.sort((a, b) => b.total_mm - a.total_mm);
                 const top = latest.slice(0, 20);
                 document.getElementById('leaderboard').innerHTML = top.map((e, i) =>
-                    `<div class="lb-row">
+                    `<div class="lb-row${highlightName === e.anonymous_name ? ' highlight' : ''}">
                         <span class="lb-rank">${i + 1}.</span>
                         <span class="lb-name">${esc(e.anonymous_name)}${e.milestone ? `<span class="lb-milestone"> ${esc(e.milestone)}</span>` : ''}</span>
                         <span class="lb-distance">${formatMM(e.total_mm)}</span>
                     </div>`
                 ).join('');
 
-                const recent = entries.slice(0, 30);
-                document.getElementById('feed').innerHTML = recent.map(e =>
-                    `<div class="feed-item">
-                        <span class="feed-time">${timeAgo(e.created_at)}</span>
-                        <span class="feed-name">${esc(e.anonymous_name)}</span>
-                        traveled ${formatMM(e.today_mm)} today
-                    </div>`
-                ).join('');
+                const hl = document.querySelector('.lb-row.highlight');
+                if (hl) hl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             } catch (err) {
                 console.error('Failed to load dashboard:', err);
                 document.getElementById('leaderboard').innerHTML = '<div class="empty">Could not load data.</div>';
-                document.getElementById('feed').innerHTML = '';
             }
         }
 
