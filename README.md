@@ -18,7 +18,13 @@ A lightweight macOS menu bar app that tracks how far your mouse cursor travels.
 
 ## Install
 
-**Quick install** (builds from source):
+### Download (recommended)
+
+Grab the latest DMG from [GitHub Releases](https://github.com/trustbe/MouseStride/releases), open it, and drag **MouseStride.app** to `/Applications`.
+
+> **Note:** MouseStride is not code-signed. On first launch, macOS will block it. Right-click the app → **Open** → click **Open** in the dialog to allow it.
+
+### Build from source
 
 ```bash
 git clone https://github.com/trustbe/MouseStride.git
@@ -26,15 +32,12 @@ cd MouseStride
 ./install.sh
 ```
 
-**Manual build:**
+Or manually:
 
 ```bash
-swift build -c release
 make bundle
 open MouseStride.app
 ```
-
-To install to `/Applications` manually, copy the built `MouseStride.app` bundle there.
 
 ## Uninstall
 
