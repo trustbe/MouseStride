@@ -1,34 +1,35 @@
 # MouseStride
 
-A lightweight macOS menu bar daemon that tracks how far your mouse cursor travels.
+A lightweight system tray app that tracks how far your mouse cursor travels. Available for macOS and Windows.
 
 ## Features
 
-- **Real-time distance tracking** — today and all-time stats in the menu bar, DPI-aware
+- **Real-time distance tracking** — today and all-time stats in the system tray, DPI-aware
 - **Automatic unit detection** — metric or imperial based on your locale
 - **Community dashboard** — anonymous stats auto-sync to a live leaderboard every 15 minutes
-- **Zero UI** — runs silently in the menu bar, click for stats and dashboard link
-
-## Requirements
-
-- macOS 13.0 (Ventura) or later
+- **Zero UI** — runs silently in the system tray, click for stats and dashboard link
+- **Cross-platform** — same leaderboard for macOS and Windows users
 
 ## Install
 
-### Download
+### macOS
 
-Grab the [latest zip](https://github.com/trustbe/MouseStride/releases/download/v0.0.3/MouseStrideDaemon-v0.0.3.zip), unzip, and move **MouseStrideDaemon.app** to `/Applications`.
+**Requirements:** macOS 13.0 (Ventura) or later
 
-> **Note:** MouseStride is not code-signed. On first launch, right-click the app → **Open** → click **Open** in the dialog.
-
-### Homebrew
+#### Homebrew (recommended)
 
 ```bash
 brew tap trustbe/mousestride
 brew install --cask mousestride
 ```
 
-### Build from source
+#### Manual download
+
+Grab the [latest zip](https://github.com/trustbe/MouseStride/releases/latest), unzip, and move **MouseStrideDaemon.app** to `/Applications`.
+
+> **Note:** MouseStride is not code-signed. On first launch, right-click the app → **Open** → click **Open** in the dialog.
+
+#### Build from source
 
 ```bash
 git clone https://github.com/trustbe/MouseStride.git
@@ -37,11 +38,42 @@ make daemon-bundle
 open MouseStrideDaemon.app
 ```
 
+### Windows
+
+**Requirements:** Windows 10 or later
+
+#### Manual download
+
+Grab the [latest MSI](https://github.com/trustbe/MouseStride/releases/latest) and run the installer.
+
+#### Build from source
+
+```bash
+git clone https://github.com/trustbe/MouseStride.git
+cd MouseStride/daemon-windows
+cargo build --release
+```
+
 ## Uninstall
+
+### macOS
+
+#### Homebrew
+
+```bash
+brew uninstall --cask mousestride
+```
+
+#### Manual
 
 ```bash
 rm -rf /Applications/MouseStrideDaemon.app
+rm -f ~/Library/Preferences/com.mousestride.daemon.plist
 ```
+
+### Windows
+
+Uninstall via **Settings → Apps → MouseStride → Uninstall**, or run the MSI installer again and choose Remove.
 
 ## Privacy
 
