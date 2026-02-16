@@ -1,32 +1,27 @@
 # MouseStride
 
-A lightweight macOS menu bar app that tracks how far your mouse cursor travels.
+A lightweight macOS menu bar daemon that tracks how far your mouse cursor travels.
 
 ## Features
 
-- **Real-time distance tracking** — today and all-time stats, DPI-aware
+- **Real-time distance tracking** — today and all-time stats in the menu bar, DPI-aware
 - **Automatic unit detection** — metric or imperial based on your locale
-- **Milestones & achievements** — unlock badges as your cursor racks up distance
-- **Community Sync** — optionally share anonymous stats to a live leaderboard
-- **Share Results** — generate a share card with your stats
-- **Launch at Login** — start tracking automatically with your Mac
+- **Community dashboard** — anonymous stats auto-sync to a live leaderboard every 15 minutes
+- **Zero UI** — runs silently in the menu bar, click for stats and dashboard link
 
 ## Requirements
 
 - macOS 13.0 (Ventura) or later
-- Swift 5.9+ (for building from source)
 
 ## Install
 
-### Download (recommended)
+### Download
 
-Grab the latest DMG from [GitHub Releases](https://github.com/trustbe/MouseStride/releases), open it, and drag **MouseStride.app** to `/Applications`.
+Grab the [latest zip](https://github.com/trustbe/MouseStride/releases/download/v0.0.2/MouseStrideDaemon-v0.0.2.zip), unzip, and move **MouseStrideDaemon.app** to `/Applications`.
 
-> **Note:** MouseStride is not code-signed. On first launch, macOS will block it. Right-click the app → **Open** → click **Open** in the dialog to allow it.
+> **Note:** MouseStride is not code-signed. On first launch, right-click the app → **Open** → click **Open** in the dialog.
 
-### Homebrew (daemon only)
-
-A lightweight background daemon — tracks distance, shows live stats in the menu bar, auto-syncs to the community dashboard. No UI popover.
+### Homebrew
 
 ```bash
 brew tap trustbe/mousestride
@@ -39,33 +34,21 @@ open /Applications/MouseStrideDaemon.app
 ```bash
 git clone https://github.com/trustbe/MouseStride.git
 cd MouseStride
-./install.sh
-```
-
-Or manually:
-
-```bash
-make bundle
-open MouseStride.app
+make daemon-bundle
+open MouseStrideDaemon.app
 ```
 
 ## Uninstall
 
 ```bash
-# Remove the app
-rm -rf /Applications/MouseStride.app
-
-# Remove launch-at-login entry (if enabled)
-rm -f ~/Library/LaunchAgents/com.mousestride.app.plist
+rm -rf /Applications/MouseStrideDaemon.app
 ```
 
 ## Privacy
 
-MouseStride is designed with privacy in mind:
-
 - No account or login required
-- All tracking data is stored locally via UserDefaults
-- Community Sync is opt-in and strictly anonymous — only distance and a random animal name are shared
+- All tracking data stored locally via UserDefaults
+- Community sync is anonymous — only distance and a random animal name are shared
 - No analytics, no telemetry
 
 ## Community Dashboard
