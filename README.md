@@ -60,7 +60,7 @@ MouseStride is designed with privacy in mind:
 
 ## Community Dashboard
 
-See how your cursor stacks up: [Community Dashboard](https://trustbe.github.io/MouseStride/)
+See how your cursor stacks up: [Community Dashboard](https://trustbe.github.io/MouseStride/dashboard.html)
 
 ## License
 

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MouseStride Community</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: #faf9f7;
+            color: #2a2520;
+            line-height: 1.5;
+            padding: 2rem 1rem;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            color: #8a8078;
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 1px;
+            background: #e8e4df;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .stat {
+            flex: 1;
+            background: #fff;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #8a8078;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        h2 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8a8078;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e8e4df;
+        }
+
+        section { margin-bottom: 2rem; }
+
+        .lb-row {
+            display: flex;
+            align-items: baseline;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0ece8;
+        }
+
+        .lb-rank {
+            width: 2rem;
+            font-weight: 600;
+            color: #8a8078;
+            font-size: 0.8rem;
+        }
+
+        .lb-name { flex: 1; font-weight: 500; }
+
+        .lb-milestone {
+            font-size: 0.75rem;
+            color: #b89c3c;
+            margin-left: 0.5rem;
+        }
+
+        .lb-distance {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .lb-row.highlight {
+            background: #fef9ec;
+            border-radius: 6px;
+            padding: 0.5rem 0.4rem;
+            margin: 0 -0.4rem;
+        }
+
+        .empty {
+            color: #a89e95;
+            font-size: 0.875rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #a89e95;
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e8e4df;
+        }
+
+        footer a { color: #8a8078; }
+    </style>
+</head>
+<body>
+    <h1><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" style="vertical-align: -0.25em;"><path d="M6 2L20 16h-6.5l3.8 9.5-3.6 1.4L9.9 17.5 6 21.5V2z"/><path d="M22 8l2.5-2.5M22 13h3.5M25.5 18l-2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg> MouseStride</h1>
+    <p class="subtitle">Community mouse distance tracker</p>
+
+    <div class="stats-bar">
+        <div class="stat">
+            <div class="stat-value" id="total-distance">&mdash;</div>
+            <div class="stat-label">Community Distance</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="total-mice">&mdash;</div>
+            <div class="stat-label">Mice</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="avg-daily">&mdash;</div>
+            <div class="stat-label">Avg / Day</div>
+        </div>
+    </div>
+
+    <section>
+        <h2>Leaderboard</h2>
+        <div id="leaderboard"><div class="empty">Loading...</div></div>
+    </section>
+
+    <footer>
+        <a href="./">← Back to MouseStride</a> · <a href="https://github.com/trustbe/MouseStride">GitHub</a>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://ygtemljaowgiypcberhz.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_od7WoRDYP46HKboEp2s1aA_HXWRf54X';
+
+        const headers = {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+        };
+
+        function formatMM(mm) {
+            if (mm >= 1_000_000) return (mm / 1_000_000).toFixed(1) + ' km';
+            if (mm >= 1_000) return (mm / 1_000).toFixed(1) + ' m';
+            if (mm >= 10) return (mm / 10).toFixed(0) + ' cm';
+            return mm.toFixed(0) + ' mm';
+        }
+
+        function timeAgo(dateStr) {
+            const diff = Date.now() - new Date(dateStr).getTime();
+            const mins = Math.floor(diff / 60000);
+            if (mins < 1) return 'just now';
+            if (mins < 60) return mins + 'm ago';
+            const hrs = Math.floor(mins / 60);
+            if (hrs < 24) return hrs + 'h ago';
+            return Math.floor(hrs / 24) + 'd ago';
+        }
+
+        async function query(path) {
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers });
+            return res.json();
+        }
+
+        async function load() {
+            const params = new URLSearchParams(window.location.search);
+            const highlightName = params.get('highlight');
+
+            try {
+                const entries = await query('entries?order=created_at.desc&limit=200');
+
+                if (!entries.length) {
+                    document.getElementById('leaderboard').innerHTML = '<div class="empty">No entries yet. Be the first!</div>';
+                    return;
+                }
+
+                const byName = {};
+                for (const e of entries) {
+                    if (!byName[e.anonymous_name] || new Date(e.created_at) > new Date(byName[e.anonymous_name].created_at)) {
+                        byName[e.anonymous_name] = e;
+                    }
+                }
+                const latest = Object.values(byName);
+                const totalDist = latest.reduce((s, e) => s + e.total_mm, 0);
+                const totalMice = latest.length;
+                const avgDaily = entries.reduce((s, e) => s + e.today_mm, 0) / entries.length;
+
+                document.getElementById('total-distance').textContent = formatMM(totalDist);
+                document.getElementById('total-mice').textContent = totalMice;
+                document.getElementById('avg-daily').textContent = formatMM(avgDaily);
+
+                latest.sort((a, b) => b.total_mm - a.total_mm);
+                const top = latest.slice(0, 20);
+                document.getElementById('leaderboard').innerHTML = top.map((e, i) =>
+                    `<div class="lb-row${highlightName === e.anonymous_name ? ' highlight' : ''}">
+                        <span class="lb-rank">${i + 1}.</span>
+                        <span class="lb-name">${esc(e.anonymous_name)}${e.milestone ? `<span class="lb-milestone"> ${esc(e.milestone)}</span>` : ''}</span>
+                        <span class="lb-distance">${formatMM(e.total_mm)}</span>
+                    </div>`
+                ).join('');
+
+                const hl = document.querySelector('.lb-row.highlight');
+                if (hl) hl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            } catch (err) {
+                console.error('Failed to load dashboard:', err);
+                document.getElementById('leaderboard').innerHTML = '<div class="empty">Could not load data.</div>';
+            }
+        }
+
+        function esc(s) {
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        load();
+    </script>
+</body>
+</html>

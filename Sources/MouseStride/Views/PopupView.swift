@@ -83,7 +83,7 @@ struct PopupView: View {
                     Button {
                         viewModel.submitToDashboard()
                         let name = AnonymousNameService.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-                        if let url = URL(string: "https://trustbe.github.io/MouseStride/?highlight=\(name)") {
+                        if let url = URL(string: "https://trustbe.github.io/MouseStride/dashboard.html?highlight=\(name)") {
                             NSWorkspace.shared.open(url)
                         }
                     } label: {
