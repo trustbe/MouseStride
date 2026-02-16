@@ -1,4 +1,5 @@
 import AppKit
+import MouseStrideCore
 import SwiftUI
 
 @MainActor
@@ -6,6 +7,7 @@ enum ShareService {
     private static let dashboardURL = "https://trustbe.github.io/MouseStride"
 
     static func shareText(
+        anonymousName: String,
         todayFormatted: String,
         totalFormatted: String,
         daysTracked: Int,
@@ -16,6 +18,7 @@ enum ShareService {
         bestDayMM: Double
     ) {
         DashboardService.submit(
+            anonymousName: anonymousName,
             todayMM: todayMM,
             totalMM: totalMM,
             bestDayMM: bestDayMM,

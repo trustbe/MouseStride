@@ -1,7 +1,7 @@
 import AppKit
 import Foundation
 
-final class MouseTracker {
+public final class MouseTracker {
     private let teleportThreshold: CGFloat = 500.0
 
     private var previousLocation: NSPoint?
@@ -9,11 +9,11 @@ final class MouseTracker {
     private var localMonitor: Any?
 
     /// Accumulated distance in points since last drain
-    private(set) var accumulatedPoints: CGFloat = 0
+    public private(set) var accumulatedPoints: CGFloat = 0
 
-    var onDistanceAccumulated: (() -> Void)?
+    public var onDistanceAccumulated: (() -> Void)?
 
-    init() {
+    public init() {
         setupSleepWakeObservers()
     }
 
@@ -22,7 +22,7 @@ final class MouseTracker {
         NotificationCenter.default.removeObserver(self)
     }
 
-    func start() {
+    public func start() {
         let eventMask: NSEvent.EventTypeMask = [.mouseMoved, .leftMouseDragged, .rightMouseDragged]
 
         globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: eventMask) { [weak self] event in
@@ -37,7 +37,7 @@ final class MouseTracker {
         previousLocation = NSEvent.mouseLocation
     }
 
-    func stop() {
+    public func stop() {
         if let globalMonitor {
             NSEvent.removeMonitor(globalMonitor)
             self.globalMonitor = nil
@@ -50,7 +50,7 @@ final class MouseTracker {
     }
 
     /// Drain and return accumulated points, resetting the accumulator to zero
-    func drainAccumulatedPoints() -> CGFloat {
+    public func drainAccumulatedPoints() -> CGFloat {
         let value = accumulatedPoints
         accumulatedPoints = 0
         return value

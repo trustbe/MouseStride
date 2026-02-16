@@ -1,4 +1,5 @@
 import AppKit
+import MouseStrideCore
 import SwiftUI
 
 struct PopupView: View {
@@ -16,7 +17,7 @@ struct PopupView: View {
                     HStack(alignment: .firstTextBaseline, spacing: 4) {
                         Text("MouseStride")
                             .font(.headline)
-                        Text("(\(AnonymousNameService.name))")
+                        Text("(\(viewModel.anonymousName))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -82,7 +83,7 @@ struct PopupView: View {
                         .frame(width: 16)
                     Button {
                         viewModel.submitToDashboard()
-                        let name = AnonymousNameService.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                        let name = viewModel.anonymousName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
                         if let url = URL(string: "https://trustbe.github.io/MouseStride/dashboard.html?highlight=\(name)") {
                             NSWorkspace.shared.open(url)
                         }
@@ -117,6 +118,7 @@ struct PopupView: View {
             HStack {
                 Button("Share Results") {
                     ShareService.shareText(
+                        anonymousName: viewModel.anonymousName,
                         todayFormatted: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem),
                         totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
                         daysTracked: viewModel.daysTracked,

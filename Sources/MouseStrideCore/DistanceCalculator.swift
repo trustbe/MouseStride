@@ -1,12 +1,12 @@
 import AppKit
 import CoreGraphics
 
-final class DistanceCalculator {
+public final class DistanceCalculator {
     private static let fallbackMMPerPoint: CGFloat = 0.2646 // 96 DPI
 
     private var mmPerPoint: CGFloat
 
-    init() {
+    public init() {
         mmPerPoint = Self.calculateMMPerPoint()
         NotificationCenter.default.addObserver(
             self,
@@ -20,7 +20,7 @@ final class DistanceCalculator {
         NotificationCenter.default.removeObserver(self)
     }
 
-    func pointsToMM(_ points: CGFloat) -> Double {
+    public func pointsToMM(_ points: CGFloat) -> Double {
         return Double(points * mmPerPoint)
     }
 
@@ -43,7 +43,7 @@ final class DistanceCalculator {
         return physicalSize.width / screenWidth
     }
 
-    static func mmPerPoint(for screenLocation: NSPoint) -> CGFloat {
+    public static func mmPerPoint(for screenLocation: NSPoint) -> CGFloat {
         guard let screen = NSScreen.screens.first(where: { $0.frame.contains(screenLocation) }) else {
             return fallbackMMPerPoint
         }

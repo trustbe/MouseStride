@@ -1,11 +1,11 @@
 import Foundation
 
-enum UnitSystem: String, CaseIterable {
+public enum UnitSystem: String, CaseIterable {
     case metric = "Metric"
     case imperial = "Imperial"
 }
 
-enum DistanceUnit: String, CaseIterable {
+public enum DistanceUnit: String, CaseIterable {
     // Metric
     case millimeters = "mm"
     case centimeters = "cm"
@@ -17,9 +17,9 @@ enum DistanceUnit: String, CaseIterable {
     case yards = "yd"
     case miles = "mi"
 
-    var abbreviation: String { rawValue }
+    public var abbreviation: String { rawValue }
 
-    func convert(fromMM mm: Double) -> Double {
+    public func convert(fromMM mm: Double) -> Double {
         switch self {
         case .millimeters: return mm
         case .centimeters: return mm / 10.0
@@ -32,7 +32,7 @@ enum DistanceUnit: String, CaseIterable {
         }
     }
 
-    func format(mm: Double) -> String {
+    public func format(mm: Double) -> String {
         let value = convert(fromMM: mm)
         switch self {
         case .millimeters, .inches:
@@ -42,7 +42,7 @@ enum DistanceUnit: String, CaseIterable {
         }
     }
 
-    static func bestUnit(forMM mm: Double, system: UnitSystem = .metric) -> DistanceUnit {
+    public static func bestUnit(forMM mm: Double, system: UnitSystem = .metric) -> DistanceUnit {
         switch system {
         case .metric:
             if mm >= 1_000_000 { return .kilometers }
@@ -57,13 +57,13 @@ enum DistanceUnit: String, CaseIterable {
         }
     }
 
-    static func autoFormat(mm: Double, system: UnitSystem = .metric) -> String {
+    public static func autoFormat(mm: Double, system: UnitSystem = .metric) -> String {
         let unit = bestUnit(forMM: mm, system: system)
         return unit.format(mm: mm)
     }
 
     /// For All Time: stick to km/miles once reached
-    static func allTimeFormat(mm: Double, system: UnitSystem = .metric) -> String {
+    public static func allTimeFormat(mm: Double, system: UnitSystem = .metric) -> String {
         switch system {
         case .metric:
             if mm >= 1_000_000 { return DistanceUnit.kilometers.format(mm: mm) }

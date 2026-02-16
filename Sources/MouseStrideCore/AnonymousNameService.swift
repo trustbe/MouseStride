@@ -1,6 +1,7 @@
 import Foundation
 
-enum AnonymousNameService {
+public final class AnonymousNameService {
+    private let defaults: UserDefaults
     private static let key = "anonymousName"
 
     private static let adjectives = [
@@ -17,12 +18,16 @@ enum AnonymousNameService {
         "Crow", "Seal", "Bee", "Hawk", "Mouse"
     ]
 
-    static var name: String {
-        if let existing = UserDefaults.standard.string(forKey: key) {
+    public init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+    }
+
+    public var name: String {
+        if let existing = defaults.string(forKey: Self.key) {
             return existing
         }
-        let generated = "\(adjectives.randomElement()!) \(animals.randomElement()!)"
-        UserDefaults.standard.set(generated, forKey: key)
+        let generated = "\(Self.adjectives.randomElement()!) \(Self.animals.randomElement()!)"
+        defaults.set(generated, forKey: Self.key)
         return generated
     }
 }

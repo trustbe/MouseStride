@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import MouseStrideCore
 import SwiftUI
 
 @MainActor
@@ -25,6 +26,9 @@ final class MouseStrideViewModel: ObservableObject {
     private let distanceCalculator = DistanceCalculator()
     private let persistence = PersistenceService()
     private let milestones = MilestoneService()
+    private let nameService = AnonymousNameService()
+
+    var anonymousName: String { nameService.name }
 
     private var uiTimer: Timer?
     private var saveTimer: Timer?
@@ -113,6 +117,7 @@ final class MouseStrideViewModel: ObservableObject {
 
     func submitToDashboard() {
         DashboardService.submit(
+            anonymousName: nameService.name,
             todayMM: todayDistanceMM,
             totalMM: totalDistanceMM,
             bestDayMM: bestDayMM,

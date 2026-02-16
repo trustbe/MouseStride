@@ -1,10 +1,11 @@
 import Foundation
 
-enum DashboardService {
+public enum DashboardService {
     private static let supabaseURL = "https://ygtemljaowgiypcberhz.supabase.co"
     private static let supabaseAnonKey = "sb_publishable_od7WoRDYP46HKboEp2s1aA_HXWRf54X"
 
-    static func submit(
+    public static func submit(
+        anonymousName: String,
         todayMM: Double,
         totalMM: Double,
         bestDayMM: Double,
@@ -20,7 +21,7 @@ enum DashboardService {
         request.setValue("Bearer \(supabaseAnonKey)", forHTTPHeaderField: "Authorization")
 
         let body: [String: Any] = [
-            "anonymous_name": AnonymousNameService.name,
+            "anonymous_name": anonymousName,
             "today_mm": Int64(todayMM),
             "total_mm": Int64(totalMM),
             "best_day_mm": Int64(bestDayMM),
