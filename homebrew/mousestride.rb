@@ -1,5 +1,5 @@
 cask "mousestride" do
-  version "1.0.0"
+  version "0.0.2"
   sha256 "PLACEHOLDER_SHA256"
 
   url "https://github.com/trustbe/MouseStride/releases/download/v#{version}/MouseStrideDaemon-v#{version}.zip"

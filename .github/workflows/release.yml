@@ -18,16 +18,10 @@ jobs:
         id: version
         run: echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
 
-      - name: Build DMG (full app)
-        run: make dmg VERSION=${{ steps.version.outputs.tag }}
-
-      - name: Verify universal binary (full app)
-        run: lipo -info .build/universal/MouseStride
-
       - name: Build Daemon ZIP
         run: make daemon-zip VERSION=${{ steps.version.outputs.tag }}
 
-      - name: Verify universal binary (daemon)
+      - name: Verify universal binary
         run: lipo -info .build/universal/MouseStrideDaemon
 
       - name: Create GitHub Release
@@ -35,7 +29,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >
           gh release create "${{ steps.version.outputs.tag }}"
-          "MouseStride-${{ steps.version.outputs.tag }}.dmg"
           "MouseStrideDaemon-${{ steps.version.outputs.tag }}.zip"
           --title "MouseStride ${{ steps.version.outputs.tag }}"
           --generate-notes
