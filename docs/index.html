@@ -1004,11 +1004,28 @@
         });
 
         // Share links
-        const shareURL = window.location.origin + window.location.pathname;
+        let shareURL = window.location.origin + window.location.pathname;
         const shareText = 'Your mouse runs marathons. Track how far your cursor travels!';
-        (function() {
-            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareURL);
-            document.getElementById('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareURL);
+
+        function updateShareLinks(url) {
+            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
+            document.getElementById('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+        }
+
+        updateShareLinks(shareURL);
+
+        // Shorten URL with TinyURL, update links in background
+        (async function() {
+            try {
+                const res = await fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(shareURL));
+                if (res.ok) {
+                    const short = await res.text();
+                    if (short.startsWith('http')) {
+                        shareURL = short;
+                        updateShareLinks(short);
+                    }
+                }
+            } catch (e) { /* CORS or network — fall back silently */ }
         })();
 
         function copyShareLink() {
