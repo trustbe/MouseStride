@@ -3,6 +3,7 @@ name = "mousestride"
 version = "0.1.0"
 edition = "2021"
 description = "Mouse distance tracker for Windows"
+authors = ["trustbe"]
 license = "MIT"
 
 [dependencies]
