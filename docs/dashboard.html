@@ -405,13 +405,13 @@
         }
 
         let shareURL = window.location.origin + window.location.pathname;
+        let shareText = 'See how far everyone\'s mouse has traveled!';
         const shortURLCache = {};
 
         // Initialize generic share links for all visitors
         (function() {
-            const url = window.location.origin + window.location.pathname;
-            const text = 'See how far everyone\'s mouse has traveled!';
-            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+            const url = shareURL;
+            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
             document.getElementById('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
             document.getElementById('share-context-text').textContent = 'Share the leaderboard:';
         })();
@@ -432,8 +432,8 @@
         }
 
         function updateShareLinks(url, distance) {
-            const text = `🐭 My mouse has traveled ${distance} — can you beat me? 🏆`;
-            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+            shareText = `🐭 My mouse has traveled ${distance} — can you beat me? 🏆`;
+            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
             document.getElementById('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
         }
 
@@ -453,7 +453,7 @@
         }
 
         function copyShareLink() {
-            navigator.clipboard.writeText(shareURL);
+            navigator.clipboard.writeText(shareText + ' ' + shareURL);
             const el = document.getElementById('share-copied');
             el.classList.add('visible');
             setTimeout(() => { el.classList.remove('visible'); }, 2000);
