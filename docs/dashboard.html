@@ -122,6 +122,44 @@
         }
 
         footer a { color: #8a8078; }
+
+        .share-bar {
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            background: #fef9ec;
+            border: 1px solid #e8e4df;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: #fff;
+            border: 1px solid #e8e4df;
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+            color: #2a2520;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: border-color 0.15s;
+        }
+
+        .share-btn:hover { border-color: #b89c3c; }
+
+        .share-copied {
+            font-size: 0.8rem;
+            color: #b89c3c;
+            font-weight: 500;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -147,6 +185,19 @@
         <h2>Leaderboard</h2>
         <div id="leaderboard"><div class="empty">Loading...</div></div>
     </section>
+
+    <div class="share-bar" id="share-bar">
+        <span>Share your rank:</span>
+        <a class="share-btn" id="share-x" href="#" target="_blank" rel="noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Share on X
+        </a>
+        <button class="share-btn" id="share-copy" onclick="copyShareLink()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy link
+        </button>
+        <span class="share-copied" id="share-copied">Copied!</span>
+    </div>
 
     <footer>
         <a href="./">← Back to MouseStride</a> · <a href="https://github.com/trustbe/MouseStride">GitHub</a>
@@ -186,6 +237,8 @@
         async function load() {
             const params = new URLSearchParams(window.location.search);
             const highlightName = params.get('highlight');
+            if (highlightName) sessionStorage.setItem('mousestride_highlight', highlightName);
+            const storedName = highlightName || sessionStorage.getItem('mousestride_highlight');
 
             try {
                 const entries = await query('entries?order=created_at.desc&limit=200');
@@ -213,7 +266,7 @@
                 latest.sort((a, b) => b.total_mm - a.total_mm);
                 const top = latest.slice(0, 20);
                 document.getElementById('leaderboard').innerHTML = top.map((e, i) =>
-                    `<div class="lb-row${highlightName === e.anonymous_name ? ' highlight' : ''}">
+                    `<div class="lb-row${storedName === e.anonymous_name ? ' highlight' : ''}">
                         <span class="lb-rank">${i + 1}.</span>
                         <span class="lb-name">${esc(e.anonymous_name)}${e.milestone ? `<span class="lb-milestone"> ${esc(e.milestone)}</span>` : ''}</span>
                         <span class="lb-distance">${formatMM(e.total_mm)}</span>
@@ -222,6 +275,11 @@
 
                 const hl = document.querySelector('.lb-row.highlight');
                 if (hl) hl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                if (storedName) {
+                    const match = latest.find(e => e.anonymous_name === storedName);
+                    if (match) setupShare(storedName, formatMM(match.total_mm));
+                }
 
             } catch (err) {
                 console.error('Failed to load dashboard:', err);
@@ -235,7 +293,33 @@
             return d.innerHTML;
         }
 
+        let shareURL = '';
+
+        function setupShare(name, distance) {
+            const url = window.location.origin + window.location.pathname + '?highlight=' + encodeURIComponent(name);
+            shareURL = url;
+            const text = `My mouse has traveled ${distance} on MouseStride! Can you beat me?`;
+            const xURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+            document.getElementById('share-x').href = xURL;
+            document.getElementById('share-bar').style.display = 'flex';
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(shareURL);
+            const el = document.getElementById('share-copied');
+            el.style.display = 'inline';
+            setTimeout(() => { el.style.display = 'none'; }, 2000);
+        }
+
         load();
+
+        (function() {
+            const name = sessionStorage.getItem('mousestride_highlight');
+            if (!name) return;
+            document.querySelectorAll('a[href="./"]').forEach(a => {
+                a.href = './?highlight=' + encodeURIComponent(name);
+            });
+        })();
     </script>
 </body>
 </html>

@@ -17,7 +17,7 @@ A lightweight macOS menu bar daemon that tracks how far your mouse cursor travel
 
 ### Download
 
-Grab the [latest zip](https://github.com/trustbe/MouseStride/releases/download/v0.0.2/MouseStrideDaemon-v0.0.2.zip), unzip, and move **MouseStrideDaemon.app** to `/Applications`.
+Grab the [latest zip](https://github.com/trustbe/MouseStride/releases/download/v0.0.3/MouseStrideDaemon-v0.0.3.zip), unzip, and move **MouseStrideDaemon.app** to `/Applications`.
 
 > **Note:** MouseStride is not code-signed. On first launch, right-click the app → **Open** → click **Open** in the dialog.
 
@@ -26,7 +26,6 @@ Grab the [latest zip](https://github.com/trustbe/MouseStride/releases/download/v
 ```bash
 brew tap trustbe/mousestride
 brew install --cask mousestride
-open /Applications/MouseStrideDaemon.app
 ```
 
 ### Build from source
