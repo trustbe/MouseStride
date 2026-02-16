@@ -1,8 +1,8 @@
 import Foundation
 
 enum DashboardService {
-    private static let supabaseURL = "https://REPLACE_ME.supabase.co"
-    private static let supabaseAnonKey = "REPLACE_ME"
+    private static let supabaseURL = "https://ygtemljaowgiypcberhz.supabase.co"
+    private static let supabaseAnonKey = "sb_publishable_od7WoRDYP46HKboEp2s1aA_HXWRf54X"
 
     static func submit(
         todayMM: Double,

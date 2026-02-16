@@ -3,7 +3,7 @@ import SwiftUI
 
 @MainActor
 enum ShareService {
-    private static let dashboardURL = "https://username.github.io/MouseStride"
+    private static let dashboardURL = "https://trustbe.github.io/MouseStride"
 
     static func shareText(
         todayFormatted: String,
