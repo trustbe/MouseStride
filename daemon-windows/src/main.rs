@@ -123,7 +123,22 @@ fn run_with_tray(
 
     let menu_channel = MenuEvent::receiver();
 
+    // Win32 message pump — required for tray-icon menu to work on Windows
+    use windows_sys::Win32::UI::WindowsAndMessaging::*;
+
+    // Set a 16ms timer for ~60Hz polling
+    unsafe { SetTimer(std::ptr::null_mut(), 0, 16, None); }
+
+    let mut msg: MSG = unsafe { std::mem::zeroed() };
     loop {
+        // Pump Win32 messages (makes tray menu work)
+        unsafe {
+            while PeekMessageW(&mut msg, std::ptr::null_mut(), 0, 0, PM_REMOVE) != 0 {
+                TranslateMessage(&msg);
+                DispatchMessageW(&msg);
+            }
+        }
+
         // Poll mouse at ~60Hz
         tracker.poll();
 
@@ -170,6 +185,7 @@ fn run_with_tray(
             }
         }
 
-        std::thread::sleep(Duration::from_millis(16));
+        // Wait for next message or timer (avoids busy-spinning)
+        unsafe { WaitMessage(); }
     }
 }
