@@ -96,8 +96,16 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
+    use std::sync::atomic::{AtomicU64, Ordering};
+    static TEST_COUNTER: AtomicU64 = AtomicU64::new(0);
+
     fn temp_path() -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("mousestride-test-{}", std::process::id()));
+        let id = TEST_COUNTER.fetch_add(1, Ordering::SeqCst);
+        let dir = std::env::temp_dir().join(format!(
+            "mousestride-test-{}-{}",
+            std::process::id(),
+            id
+        ));
         std::fs::create_dir_all(&dir).unwrap();
         dir.join("data.json")
     }
