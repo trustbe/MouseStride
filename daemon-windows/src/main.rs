@@ -1,3 +1,4 @@
+#![cfg_attr(windows, windows_subsystem = "windows")]
 #![allow(unused_imports, unused_mut)]
 
 mod name_gen;
@@ -103,8 +104,8 @@ fn run_with_tray(
     menu.append(&PredefinedMenuItem::separator()).ok();
     menu.append(&quit_item).ok();
 
-    // Load tray icon from pre-rendered 32x32 RGBA data
-    let icon_rgba = include_bytes!("../icons/icon-32x32.rgba").to_vec();
+    // Load tray icon from pre-rendered 32x32 white RGBA data (visible on dark taskbar)
+    let icon_rgba = include_bytes!("../icons/icon-32x32-white.rgba").to_vec();
     let icon = tray_icon::Icon::from_rgba(icon_rgba, 32, 32)
         .expect("Failed to create tray icon from embedded RGBA data");
 
