@@ -11,6 +11,12 @@ final class MouseMeasureViewModel: ObservableObject {
     @Published var lastMilestoneIcon: String? = nil
     @Published var nextMilestoneText: String? = nil
     @Published var nextMilestoneIcon: String? = nil
+    @Published var autoShareEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(autoShareEnabled, forKey: "autoShareEnabled")
+            if autoShareEnabled { startAutoShareTimer() } else { stopAutoShareTimer() }
+        }
+    }
     var unitSystem: UnitSystem {
         Locale.current.measurementSystem == .metric ? .metric : .imperial
     }
@@ -22,11 +28,13 @@ final class MouseMeasureViewModel: ObservableObject {
 
     private var uiTimer: Timer?
     private var saveTimer: Timer?
+    private var autoShareTimer: Timer?
 
     /// Points accumulated since last UI update, converted to mm and added to running totals
     private var pendingMM: Double = 0
 
     init() {
+        autoShareEnabled = UserDefaults.standard.bool(forKey: "autoShareEnabled")
         totalDistanceMM = persistence.totalDistanceMM
         todayDistanceMM = persistence.todayDistanceMM()
         persistence.pruneOldEntries()
@@ -35,12 +43,14 @@ final class MouseMeasureViewModel: ObservableObject {
 
         mouseTracker.start()
         startTimers()
+        if autoShareEnabled { startAutoShareTimer() }
         setupTerminationObserver()
     }
 
     deinit {
         uiTimer?.invalidate()
         saveTimer?.invalidate()
+        autoShareTimer?.invalidate()
     }
 
     func resetAll() {
@@ -85,6 +95,30 @@ final class MouseMeasureViewModel: ObservableObject {
                 self?.save()
             }
         }
+    }
+
+    private func startAutoShareTimer() {
+        autoShareTimer?.invalidate()
+        autoShareTimer = Timer.scheduledTimer(withTimeInterval: 900, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.submitToDashboard()
+            }
+        }
+    }
+
+    private func stopAutoShareTimer() {
+        autoShareTimer?.invalidate()
+        autoShareTimer = nil
+    }
+
+    private func submitToDashboard() {
+        DashboardService.submit(
+            todayMM: todayDistanceMM,
+            totalMM: totalDistanceMM,
+            bestDayMM: bestDayMM,
+            daysTracked: daysTracked,
+            milestone: lastReachedMilestone?.title
+        )
     }
 
     private func updateFromTracker() {

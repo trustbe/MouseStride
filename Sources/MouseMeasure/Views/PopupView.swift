@@ -14,6 +14,9 @@ struct PopupView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("MouseStride")
                         .font(.headline)
+                    Text(AnonymousNameService.name)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     Text(tagline(forMM: viewModel.totalDistanceMM))
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -57,7 +60,7 @@ struct PopupView: View {
                 Image(systemName: "sunrise")
                     .foregroundStyle(.secondary)
                     .frame(width: 16)
-                Text("Launch at Login")
+                Text("Start with Mac")
                     .foregroundStyle(.secondary)
                 Spacer()
                 Toggle("", isOn: Binding(
@@ -68,11 +71,30 @@ struct PopupView: View {
                 .controlSize(.mini)
             }
 
+            // Community Sync toggle
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundStyle(.secondary)
+                        .frame(width: 16)
+                    Text("Community Sync")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Toggle("", isOn: $viewModel.autoShareEnabled)
+                        .toggleStyle(.switch)
+                        .controlSize(.mini)
+                }
+                Text("Strictly anonymous · every 15 min")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .padding(.leading, 22)
+            }
+
             Divider()
 
             // Actions
             HStack {
-                Button("Share") {
+                Button("Share Results") {
                     ShareService.shareText(
                         todayFormatted: DistanceUnit.autoFormat(mm: viewModel.todayDistanceMM, system: viewModel.unitSystem),
                         totalFormatted: DistanceUnit.allTimeFormat(mm: viewModel.totalDistanceMM, system: viewModel.unitSystem),
