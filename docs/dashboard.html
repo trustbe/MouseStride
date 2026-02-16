@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MouseStride Community</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 2L18 16h-6l3.5 9.5-3.5 1.3-3.5-9.3L4 22V2z' fill='%232a2520'/%3E%3Cline x1='20' y1='5' x2='28' y2='5' stroke='%232a2520' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='21' y1='10' x2='27' y2='10' stroke='%232a2520' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='22' y1='15' x2='26' y2='15' stroke='%232a2520' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <meta property="og:title" content="MouseStride Community Dashboard">
+    <meta property="og:description" content="See how far everyone's mouse has traveled. Join the leaderboard!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://trustbe.github.io/MouseStride/dashboard.html">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="MouseStride Community Dashboard">
+    <meta name="twitter:description" content="See how far everyone's mouse has traveled. Join the leaderboard!">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -125,14 +132,34 @@
 
         .share-bar {
             display: none;
-            align-items: center;
-            gap: 0.75rem;
+            flex-direction: column;
+            gap: 0.6rem;
             background: #fef9ec;
             border: 1px solid #e8e4df;
             border-radius: 8px;
             padding: 0.75rem 1rem;
             margin-bottom: 2rem;
             font-size: 0.85rem;
+        }
+
+        .share-context {
+            font-size: 0.85rem;
+            color: #5a524a;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .share-context strong {
+            color: #b89c3c;
+            font-weight: 700;
+        }
+
+
+        .share-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
 
@@ -140,25 +167,53 @@
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            background: #fff;
-            border: 1px solid #e8e4df;
+            border: none;
             border-radius: 6px;
-            padding: 0.4rem 0.75rem;
+            padding: 0.45rem 0.85rem;
             font-size: 0.8rem;
-            color: #2a2520;
             text-decoration: none;
             cursor: pointer;
             font-family: inherit;
+            font-weight: 500;
+            transition: opacity 0.15s;
+        }
+
+        .share-btn--x {
+            background: #14171a;
+            color: #fff;
+        }
+
+        .share-btn--fb {
+            background: #1877F2;
+            color: #fff;
+        }
+
+        .share-btn--x:hover,
+        .share-btn--fb:hover {
+            opacity: 0.88;
+        }
+
+        .share-btn--copy {
+            background: #fff;
+            color: #2a2520;
+            border: 1px solid #e8e4df;
             transition: border-color 0.15s;
         }
 
-        .share-btn:hover { border-color: #b89c3c; }
+        .share-btn--copy:hover {
+            border-color: #b89c3c;
+        }
 
         .share-copied {
             font-size: 0.8rem;
             color: #b89c3c;
             font-weight: 500;
-            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .share-copied.visible {
+            opacity: 1;
         }
     </style>
 </head>
@@ -187,16 +242,22 @@
     </section>
 
     <div class="share-bar" id="share-bar">
-        <span>Share your rank:</span>
-        <a class="share-btn" id="share-x" href="#" target="_blank" rel="noopener">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            Share on X
-        </a>
-        <button class="share-btn" id="share-copy" onclick="copyShareLink()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-            Copy link
-        </button>
-        <span class="share-copied" id="share-copied">Copied!</span>
+        <div class="share-context" id="share-context"><span id="share-context-text">Share your rank:</span></div>
+        <div class="share-buttons">
+            <a class="share-btn share-btn--x" id="share-x" href="#" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                Post on X
+            </a>
+            <a class="share-btn share-btn--fb" id="share-fb" href="#" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Share on Facebook
+            </a>
+            <button class="share-btn share-btn--copy" id="share-copy" onclick="copyShareLink()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy link
+            </button>
+            <span class="share-copied" id="share-copied">Copied!</span>
+        </div>
     </div>
 
     <footer>
@@ -277,8 +338,10 @@
                 if (hl) hl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
                 if (storedName) {
-                    const match = latest.find(e => e.anonymous_name === storedName);
-                    if (match) setupShare(storedName, formatMM(match.total_mm));
+                    const rank = latest.findIndex(e => e.anonymous_name === storedName);
+                    if (rank !== -1) {
+                        setupShare(storedName, formatMM(latest[rank].total_mm), rank + 1);
+                    }
                 }
 
             } catch (err) {
@@ -294,21 +357,50 @@
         }
 
         let shareURL = '';
+        const shortURLCache = {};
 
-        function setupShare(name, distance) {
+        async function shortenURL(url) {
+            if (shortURLCache[url]) return shortURLCache[url];
+            try {
+                const res = await fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url));
+                if (res.ok) {
+                    const short = await res.text();
+                    if (short.startsWith('http')) {
+                        shortURLCache[url] = short;
+                        return short;
+                    }
+                }
+            } catch (e) { /* CORS or network — fall back silently */ }
+            return url;
+        }
+
+        function updateShareLinks(url, distance) {
+            const text = `🐭 My mouse has traveled ${distance} — can you beat me? 🏆`;
+            document.getElementById('share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+            document.getElementById('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+        }
+
+        function setupShare(name, distance, rank) {
             const url = window.location.origin + window.location.pathname + '?highlight=' + encodeURIComponent(name);
             shareURL = url;
-            const text = `My mouse has traveled ${distance} on MouseStride! Can you beat me?`;
-            const xURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
-            document.getElementById('share-x').href = xURL;
+
+            document.getElementById('share-context-text').innerHTML =
+                `You're <strong>#${rank}</strong> with <strong>${esc(distance)}</strong> — share it!`;
+
+            updateShareLinks(url, distance);
             document.getElementById('share-bar').style.display = 'flex';
+
+            shortenURL(url).then(short => {
+                shareURL = short;
+                updateShareLinks(short, distance);
+            });
         }
 
         function copyShareLink() {
             navigator.clipboard.writeText(shareURL);
             const el = document.getElementById('share-copied');
-            el.style.display = 'inline';
-            setTimeout(() => { el.style.display = 'none'; }, 2000);
+            el.classList.add('visible');
+            setTimeout(() => { el.classList.remove('visible'); }, 2000);
         }
 
         load();
