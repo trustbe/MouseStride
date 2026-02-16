@@ -25,7 +25,7 @@ pub fn is_teleport(pixel_distance: f64) -> bool {
 pub fn get_system_dpi() -> u32 {
     #[cfg(windows)]
     {
-        unsafe { windows_sys::Win32::UI::WindowsAndMessaging::GetDpiForSystem() }
+        unsafe { windows_sys::Win32::UI::HiDpi::GetDpiForSystem() }
     }
     #[cfg(not(windows))]
     {

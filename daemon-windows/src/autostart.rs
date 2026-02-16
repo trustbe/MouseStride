@@ -25,7 +25,7 @@ pub fn register() {
         .collect();
 
     unsafe {
-        let mut hkey = 0isize;
+        let mut hkey: HKEY = std::ptr::null_mut();
         let result = RegCreateKeyExW(
             HKEY_CURRENT_USER,
             key_path.as_ptr(),
