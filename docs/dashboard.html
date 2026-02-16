@@ -164,96 +164,54 @@
             color: #b89c3c;
         }
 
-        .action-bar {
+        .dash-header {
             display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            background: #fef9ec;
-            border: 1px solid #e8e4df;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            margin-bottom: 2rem;
-            font-size: 0.85rem;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
         }
 
-        .action-context {
-            font-size: 0.85rem;
-            color: #5a524a;
+        .dash-header .subtitle {
+            margin-bottom: 0;
+        }
+
+        .dash-actions {
             display: flex;
-            align-items: center;
-            gap: 0.4rem;
+            gap: 0.25rem;
+            padding-top: 0.4rem;
         }
 
-        .action-context strong {
-            color: #b89c3c;
-            font-weight: 700;
-        }
-
-
-        .action-buttons {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
+        .nav-icon {
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
+            justify-content: center;
+            background: none;
             border: none;
-            border-radius: 6px;
-            padding: 0.45rem 0.85rem;
-            font-size: 0.8rem;
-            text-decoration: none;
+            padding: 0.3rem;
             cursor: pointer;
-            font-family: inherit;
-            font-weight: 500;
+            border-radius: 4px;
             transition: opacity 0.15s;
+            opacity: 0.55;
         }
-
-        .action-btn--post {
-            background: #14171a;
-            color: #fff;
-        }
-
-        .action-btn--link {
-            background: #1877F2;
-            color: #fff;
-        }
-
-        .action-btn--post:hover,
-        .action-btn--link:hover {
-            opacity: 0.88;
-        }
-
-        .action-btn--clip {
-            background: #fff;
-            color: #2a2520;
-            border: 1px solid #e8e4df;
-            transition: border-color 0.15s;
-        }
-
-        .action-btn--clip:hover {
-            border-color: #b89c3c;
-        }
-
-        .action-copied {
-            font-size: 0.8rem;
-            color: #b89c3c;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .action-copied.visible {
-            opacity: 1;
-        }
+        .nav-icon:hover { opacity: 1; }
+        .nav-icon img { display: block; }
     </style>
 </head>
 <body>
-    <h1><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" style="vertical-align: -0.25em;"><path d="M4 2L18 16h-6l3.5 9.5-3.5 1.3-3.5-9.3L4 22V2z"/><line x1="20" y1="5" x2="28" y2="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="21" y1="10" x2="27" y2="10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="22" y1="15" x2="26" y2="15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg> MouseStride</h1>
-    <p class="subtitle">Community mouse distance tracker</p>
+    <header class="dash-header">
+        <div>
+            <h1><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" style="vertical-align: -0.25em;"><path d="M4 2L18 16h-6l3.5 9.5-3.5 1.3-3.5-9.3L4 22V2z"/><line x1="20" y1="5" x2="28" y2="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="21" y1="10" x2="27" y2="10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="22" y1="15" x2="26" y2="15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg> MouseStride</h1>
+            <p class="subtitle">Community mouse distance tracker</p>
+        </div>
+        <div class="dash-actions">
+            <button class="nav-icon" onclick="openPost()" title="Post">
+                <img src="ic-a.png" width="16" height="16" alt="">
+            </button>
+            <button class="nav-icon" onclick="openLink()" title="Share">
+                <img src="ic-b.png" width="16" height="16" alt="">
+            </button>
+        </div>
+    </header>
 
     <div class="stats-bar">
         <div class="stat">
@@ -288,25 +246,6 @@
         </div>
         <span class="download-cta-arrow">&rarr;</span>
     </a>
-
-    <div class="action-bar" id="action-bar">
-        <div class="action-context" id="action-context"><span id="action-context-text">Share your rank:</span></div>
-        <div class="action-buttons">
-            <a class="action-btn action-btn--post" id="action-post" href="#" target="_blank" rel="noopener">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                Post on X
-            </a>
-            <a class="action-btn action-btn--link" id="action-link" href="#" target="_blank" rel="noopener">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                Share on Facebook
-            </a>
-            <button class="action-btn action-btn--clip" id="action-clip" onclick="copyShareLink()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                Copy link
-            </button>
-            <span class="action-copied" id="action-copied">Copied!</span>
-        </div>
-    </div>
 
     <footer>
         <a href="./">← Back to MouseStride</a> · <a href="https://github.com/trustbe/MouseStride">GitHub</a>
@@ -406,15 +345,10 @@
 
         let shareURL = window.location.origin + window.location.pathname;
         let shareText = 'See how far everyone\'s mouse has traveled!';
+        let postURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareURL);
+        let linkURL = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareURL);
         const shortURLCache = {};
 
-        // Initialize generic share links for all visitors
-        (function() {
-            const url = shareURL;
-            document.getElementById('action-post').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
-            document.getElementById('action-link').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
-            document.getElementById('action-context-text').textContent = 'Share the leaderboard:';
-        })();
 
         async function shortenURL(url) {
             if (shortURLCache[url]) return shortURLCache[url];
@@ -433,16 +367,16 @@
 
         function updateShareLinks(url, distance) {
             shareText = `🐭 My mouse has traveled ${distance} — can you beat me? 🏆`;
-            document.getElementById('action-post').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
-            document.getElementById('action-link').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+            postURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
+            linkURL = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
         }
+
+        function openPost() { window.open(postURL, '_blank', 'noopener'); }
+        function openLink() { window.open(linkURL, '_blank', 'noopener'); }
 
         function setupShare(name, distance, rank) {
             const url = window.location.origin + window.location.pathname + '?highlight=' + encodeURIComponent(name);
             shareURL = url;
-
-            document.getElementById('action-context-text').innerHTML =
-                `You're <strong>#${rank}</strong> with <strong>${esc(distance)}</strong> — share it!`;
 
             updateShareLinks(url, distance);
 
@@ -450,13 +384,6 @@
                 shareURL = short;
                 updateShareLinks(short, distance);
             });
-        }
-
-        function copyShareLink() {
-            navigator.clipboard.writeText(shareText + ' ' + shareURL);
-            const el = document.getElementById('action-copied');
-            el.classList.add('visible');
-            setTimeout(() => { el.classList.remove('visible'); }, 2000);
         }
 
         load();

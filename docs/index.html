@@ -91,6 +91,21 @@
 
         .nav-links .nav-cta:hover { background: #3d3530; }
 
+        .nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0.3rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: opacity 0.15s;
+            opacity: 0.55;
+        }
+        .nav-icon:hover { opacity: 1; }
+        .nav-icon img { display: block; }
+
         /* Hero */
         .hero {
             text-align: center;
@@ -543,85 +558,6 @@
             color: var(--text-faint);
         }
 
-        /* Action bar */
-        .action-bar {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            background: var(--bg-warm);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            max-width: 640px;
-            margin: 0 auto 3rem;
-            font-size: 0.85rem;
-        }
-
-        .action-context {
-            font-size: 0.85rem;
-            color: #5a524a;
-        }
-
-        .action-buttons {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            border: none;
-            border-radius: 6px;
-            padding: 0.45rem 0.85rem;
-            font-size: 0.8rem;
-            text-decoration: none;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 500;
-            transition: opacity 0.15s;
-        }
-
-        .action-btn--post {
-            background: #14171a;
-            color: #fff;
-        }
-
-        .action-btn--link {
-            background: #1877F2;
-            color: #fff;
-        }
-
-        .action-btn--post:hover,
-        .action-btn--link:hover {
-            opacity: 0.88;
-        }
-
-        .action-btn--clip {
-            background: var(--white);
-            color: var(--text);
-            border: 1px solid var(--border);
-            transition: border-color 0.15s;
-        }
-
-        .action-btn--clip:hover {
-            border-color: var(--gold);
-        }
-
-        .action-copied {
-            font-size: 0.8rem;
-            color: var(--gold);
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .action-copied.visible {
-            opacity: 1;
-        }
-
         /* Footer */
         footer {
             border-top: 1px solid var(--border);
@@ -686,6 +622,12 @@
         <div class="nav-links">
             <a href="dashboard.html">Dashboard</a>
             <a href="https://github.com/trustbe/MouseStride" class="hide-mobile">GitHub</a>
+            <button class="nav-icon" onclick="openPost()" title="Post">
+                <img src="ic-a.png" width="16" height="16" alt="">
+            </button>
+            <button class="nav-icon" onclick="openLink()" title="Share">
+                <img src="ic-b.png" width="16" height="16" alt="">
+            </button>
             <a href="#hero-cta" class="nav-cta">Install</a>
         </div>
     </nav>
@@ -863,26 +805,6 @@
         </div>
     </div>
 
-    <!-- Action bar -->
-    <div class="action-bar" id="action-bar">
-        <div class="action-context">Share MouseStride:</div>
-        <div class="action-buttons">
-            <a class="action-btn action-btn--post" id="action-post" href="#" target="_blank" rel="noopener">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                Post on X
-            </a>
-            <a class="action-btn action-btn--link" id="action-link" href="#" target="_blank" rel="noopener">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                Share on Facebook
-            </a>
-            <button class="action-btn action-btn--clip" id="action-clip" onclick="copyShareLink()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                Copy link
-            </button>
-            <span class="action-copied" id="action-copied">Copied!</span>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer>
         <span>MouseStride is free, open source, and respects your privacy.</span>
@@ -1006,13 +928,16 @@
         // Share links
         let shareURL = window.location.origin + window.location.pathname;
         const shareText = 'Your mouse runs marathons. Track how far your cursor travels!';
+        let postURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareURL);
+        let linkURL = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareURL);
 
         function updateShareLinks(url) {
-            document.getElementById('action-post').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
-            document.getElementById('action-link').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+            postURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
+            linkURL = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
         }
 
-        updateShareLinks(shareURL);
+        function openPost() { window.open(postURL, '_blank', 'noopener'); }
+        function openLink() { window.open(linkURL, '_blank', 'noopener'); }
 
         // Shorten URL with TinyURL, update links in background
         (async function() {
@@ -1027,13 +952,6 @@
                 }
             } catch (e) { /* CORS or network — fall back silently */ }
         })();
-
-        function copyShareLink() {
-            navigator.clipboard.writeText(shareText + ' ' + shareURL);
-            const el = document.getElementById('action-copied');
-            el.classList.add('visible');
-            setTimeout(() => { el.classList.remove('visible'); }, 2000);
-        }
 
         loadStats();
         initMilestoneAnimations();
