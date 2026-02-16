@@ -119,6 +119,7 @@ fn run_with_tray(
     // Timer tracking
     let mut last_save = Instant::now();
     let mut last_sync = Instant::now();
+    let mut last_menu_update = Instant::now();
     let mut pending_mm = 0.0;
 
     let menu_channel = MenuEvent::receiver();
@@ -149,15 +150,20 @@ fn run_with_tray(
             pending_mm += mm;
         }
 
-        // 30s: save to disk and update menu
+        // 2s: update menu display with live distance
+        if last_menu_update.elapsed() >= Duration::from_secs(2) && pending_mm > 0.0 {
+            let live_today = persistence.today_distance_mm() + pending_mm;
+            let live_total = persistence.total_distance_mm() + pending_mm;
+            today_item.set_text(&format!("Today: {}", auto_format(live_today, unit_system)));
+            total_item.set_text(&format!("Total: {}", auto_format(live_total, unit_system)));
+            last_menu_update = Instant::now();
+        }
+
+        // 30s: save to disk
         if last_save.elapsed() >= Duration::from_secs(30) && pending_mm > 0.0 {
             persistence.add_distance(pending_mm);
             pending_mm = 0.0;
             persistence.save().ok();
-
-            today_item.set_text(&format!("Today: {}", auto_format(persistence.today_distance_mm(), unit_system)));
-            total_item.set_text(&format!("Total: {}", auto_format(persistence.total_distance_mm(), unit_system)));
-
             last_save = Instant::now();
         }
 
