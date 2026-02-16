@@ -1,6 +1,6 @@
 cask "mousestride" do
-  version "0.0.3"
-  sha256 "d3f91b4ec935415ac0c4a307008390360d50f69e2f1a985d390c30b10972021a"
+  version "0.0.4"
+  sha256 "e41eb24f1b67a3cc62887a9ffb524970c7d54cba22593e471df95531074e9a83"
 
   url "https://github.com/trustbe/MouseStride/releases/download/v#{version}/MouseStrideDaemon-v#{version}.zip"
   name "MouseStride"
