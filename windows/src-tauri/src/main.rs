@@ -11,9 +11,13 @@ use mouse_stride::persistence::PersistenceService;
 use mouse_stride::dashboard;
 
 use parking_lot::Mutex;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::time::Duration;
 use tauri::tray::TrayIconEvent;
-use tauri::{Manager, WindowEvent};
+use tauri::{Manager, PhysicalPosition, WindowEvent};
+
+static LAST_TRAY_CLICK_MS: AtomicU64 = AtomicU64::new(0);
+static SHOWING_WINDOW: AtomicBool = AtomicBool::new(false);
 
 fn format_distance(mm: f64) -> String {
     if mm >= 1_000_000.0 {
@@ -72,13 +76,28 @@ fn main() {
             commands::quit_app,
         ])
         .on_tray_icon_event(|tray, event| {
-            if let TrayIconEvent::Click { .. } = event {
+            if let TrayIconEvent::Click { position, .. } = event {
+                let now = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap_or_default()
+                    .as_millis() as u64;
+                LAST_TRAY_CLICK_MS.store(now, Ordering::SeqCst);
+
                 let app = tray.app_handle();
                 if let Some(window) = app.get_webview_window("main") {
                     if window.is_visible().unwrap_or(false) {
                         let _ = window.hide();
                     } else {
-                        // Position window near tray icon
+                        // Set flag before showing to suppress the immediate
+                        // focus-loss event that macOS fires when clicking the
+                        // tray area
+                        SHOWING_WINDOW.store(true, Ordering::SeqCst);
+
+                        // Position window below the tray icon, centered horizontally
+                        let win_width = 300.0_f64;
+                        let x = position.x - win_width / 2.0;
+                        let y = position.y;
+                        let _ = window.set_position(PhysicalPosition::new(x as i32, y as i32));
                         let _ = window.show();
                         let _ = window.set_focus();
                     }
@@ -86,8 +105,31 @@ fn main() {
             }
         })
         .on_window_event(|window, event| {
-            if let WindowEvent::Focused(false) = event {
-                let _ = window.hide();
+            match event {
+                WindowEvent::Focused(true) => {
+                    // Window gained focus — clear the showing flag
+                    SHOWING_WINDOW.store(false, Ordering::SeqCst);
+                }
+                WindowEvent::Focused(false) => {
+                    // If we just showed the window via tray click, consume
+                    // the flag and skip this focus-loss event
+                    if SHOWING_WINDOW.compare_exchange(
+                        true, false, Ordering::SeqCst, Ordering::SeqCst
+                    ).is_ok() {
+                        return;
+                    }
+
+                    // Also guard with a time window for any other edge cases
+                    let now = std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap_or_default()
+                        .as_millis() as u64;
+                    let last_click = LAST_TRAY_CLICK_MS.load(Ordering::SeqCst);
+                    if now.saturating_sub(last_click) > 500 {
+                        let _ = window.hide();
+                    }
+                }
+                _ => {}
             }
         })
         .setup(|app| {
