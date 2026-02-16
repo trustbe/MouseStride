@@ -26,16 +26,10 @@ pub fn register() {
 
     unsafe {
         let mut hkey: HKEY = std::ptr::null_mut();
-        let result = RegCreateKeyExW(
+        let result = RegCreateKeyW(
             HKEY_CURRENT_USER,
             key_path.as_ptr(),
-            0,
-            std::ptr::null(),
-            0,
-            KEY_WRITE,
-            std::ptr::null(),
             &mut hkey,
-            std::ptr::null_mut(),
         );
 
         if result == 0 {
