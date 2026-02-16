@@ -78,3 +78,39 @@ fn get_cursor_pos() -> Option<(f64, f64)> {
 fn get_cursor_pos() -> Option<(f64, f64)> {
     None // stub for non-Windows compilation
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn new_tracker_starts_at_zero() {
+        let mut tracker = MouseTracker::new();
+        assert_eq!(tracker.drain(), 0.0);
+    }
+
+    #[test]
+    fn drain_resets_accumulator() {
+        let mut tracker = MouseTracker::new();
+        // Manually set accumulated distance
+        tracker.accumulated_pixels = 42.0;
+        assert_eq!(tracker.drain(), 42.0);
+        assert_eq!(tracker.drain(), 0.0);
+    }
+
+    #[test]
+    fn reset_position_clears_initialized() {
+        let mut tracker = MouseTracker::new();
+        tracker.initialized = true;
+        tracker.reset_position();
+        assert!(!tracker.initialized);
+    }
+
+    #[test]
+    fn poll_on_non_windows_is_noop() {
+        let mut tracker = MouseTracker::new();
+        tracker.poll();
+        assert_eq!(tracker.drain(), 0.0);
+        assert!(!tracker.initialized);
+    }
+}
