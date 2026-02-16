@@ -9,178 +9,356 @@
     <meta property="og:description" content="A lightweight macOS menu bar app that tracks how far your mouse cursor travels. Milestones, community leaderboard, zero accounts.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://trustbe.github.io/MouseStride/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background: #faf9f7;
-            color: #2a2520;
-            line-height: 1.6;
+        :root {
+            --bg: #faf9f7;
+            --bg-warm: #f5f2ed;
+            --text: #2a2520;
+            --text-muted: #8a8078;
+            --text-faint: #a89e95;
+            --gold: #b89c3c;
+            --gold-light: #d4bc5e;
+            --blue: #3a75d4;
+            --blue-hover: #2e63b8;
+            --border: #e8e4df;
+            --white: #fffffe;
         }
 
-        .container {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
+
+        h1, h2, h3, .hero-counter, .milestone-title, .nav-brand {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Nav */
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-brand svg { flex-shrink: 0; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        .nav-links .nav-cta {
+            background: var(--text);
+            color: var(--bg);
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            letter-spacing: 0.01em;
+        }
+
+        .nav-links .nav-cta:hover { background: #3d3530; }
 
         /* Hero */
         .hero {
             text-align: center;
-            padding: 5rem 1.5rem 4rem;
+            padding: 4rem 1.5rem 5rem;
             max-width: 720px;
             margin: 0 auto;
+            position: relative;
         }
 
-        .hero-icon {
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            color: #2a2520;
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--bg-warm);
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.85rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
         }
+
+        .hero-badge span { color: var(--gold); }
 
         .hero h1 {
-            font-size: clamp(1.75rem, 5vw, 2.5rem);
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            line-height: 1.15;
-            margin-bottom: 0.75rem;
+            font-size: clamp(2.25rem, 6vw, 3.25rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
         }
 
         .hero-sub {
-            font-size: 1.1rem;
-            color: #8a8078;
-            margin-bottom: 2rem;
-            max-width: 480px;
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 440px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .hero-counter-wrap {
+            margin-bottom: 3rem;
         }
 
         .hero-counter {
-            font-size: clamp(2rem, 6vw, 3rem);
-            font-weight: 800;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
             font-variant-numeric: tabular-nums;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.25rem;
-            min-height: 1.2em;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            min-height: 1.1em;
+            background: linear-gradient(135deg, var(--text) 0%, #5a4f48 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            /* keep text visible, gradient adds subtle depth */
         }
 
         .hero-counter-label {
-            font-size: 0.8rem;
-            color: #8a8078;
+            font-size: 0.75rem;
+            color: var(--text-faint);
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 2.5rem;
+            letter-spacing: 0.1em;
+            font-weight: 500;
         }
 
-        .cta-group {
+        .hero-cta {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
-        .cta-primary {
-            display: inline-block;
-            background: #3a75d4;
-            color: #fff;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--blue);
+            color: var(--white);
+            padding: 0.85rem 1.75rem;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1rem;
-            transition: background 0.15s;
+            font-size: 0.95rem;
+            transition: background 0.15s, transform 0.1s;
         }
 
-        .cta-primary:hover { background: #2e63b8; }
+        .btn-primary:hover { background: var(--blue-hover); }
+        .btn-primary:active { transform: scale(0.98); }
 
-        .cta-secondary {
-            display: inline-block;
-            color: #8a8078;
+        .btn-platform {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.85rem 1.75rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background 0.15s, transform 0.1s, border-color 0.15s;
+            border: 2px solid var(--border);
+            color: var(--text-muted);
+            background: var(--white);
+            min-width: 130px;
+        }
+
+        .btn-platform:hover {
+            border-color: var(--text-muted);
+            color: var(--text);
+        }
+
+        .btn-platform:active { transform: scale(0.98); }
+
+        .btn-platform.btn-primary {
+            border-color: var(--blue);
+            background: var(--blue);
+            color: var(--white);
+        }
+
+        .btn-platform.btn-primary:hover {
+            background: var(--blue-hover);
+            border-color: var(--blue-hover);
+        }
+
+        .btn-platform-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .btn-platform-ext {
+            font-size: 0.65rem;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
             text-decoration: none;
             font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.15s;
         }
 
-        .cta-secondary:hover { color: #2a2520; }
+        .btn-secondary:hover { color: var(--text); }
 
         .hero-note {
             font-size: 0.75rem;
-            color: #a89e95;
-            margin-top: 1rem;
+            color: var(--text-faint);
+            margin-top: 1.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-note span {
+            display: inline-block;
+            margin: 0 0.35rem;
+            opacity: 0.4;
+        }
+
+        /* Divider dots */
+        .dot-divider {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 1rem 0;
+        }
+
+        .dot-divider i {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--border);
         }
 
         /* Features */
         .features {
-            padding: 3rem 0;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         .feature {
-            text-align: center;
+            background: var(--white);
+            padding: 2rem 1.5rem;
         }
 
         .feature-icon {
-            display: inline-flex;
+            width: 40px;
+            height: 40px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 48px;
-            height: 48px;
-            margin-bottom: 0.75rem;
-            color: #2a2520;
+            margin-bottom: 1rem;
+            color: var(--gold);
         }
 
         .feature h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin-bottom: 0.35rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.01em;
         }
 
         .feature p {
-            font-size: 0.85rem;
-            color: #8a8078;
+            font-size: 0.82rem;
+            color: var(--text-muted);
             line-height: 1.5;
         }
 
         /* Milestones */
         .milestones {
-            padding: 3rem 0;
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem 3rem;
         }
 
-        .section-title {
-            font-size: 0.8rem;
+        .section-label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #8a8078;
-            margin-bottom: 2rem;
-            text-align: center;
+            letter-spacing: 0.12em;
+            color: var(--text-faint);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .section-heading {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 2.5rem;
         }
 
         .timeline {
             position: relative;
-            padding-left: 2rem;
+            padding-left: 2.5rem;
         }
 
         .timeline::before {
             content: '';
             position: absolute;
-            left: 5px;
-            top: 8px;
-            bottom: 8px;
+            left: 7px;
+            top: 4px;
+            bottom: 4px;
             width: 2px;
-            background: #e8e4df;
+            background: linear-gradient(to bottom, var(--border) 0%, var(--gold-light) 50%, var(--border) 100%);
         }
 
         .milestone {
             position: relative;
-            padding-bottom: 1.75rem;
+            padding-bottom: 2rem;
             opacity: 0;
-            transform: translateY(16px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .milestone.visible {
@@ -193,277 +371,219 @@
         .milestone::before {
             content: '';
             position: absolute;
-            left: -2rem;
-            top: 6px;
-            width: 12px;
-            height: 12px;
+            left: -2.5rem;
+            top: 4px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #b89c3c;
-            border: 2px solid #faf9f7;
+            background: var(--bg);
+            border: 3px solid var(--gold);
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .milestone.visible::before {
+            background: var(--gold);
         }
 
         .milestone-dist {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 0.7rem;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #b89c3c;
+            letter-spacing: 0.08em;
+            color: var(--gold);
             margin-bottom: 0.15rem;
         }
 
         .milestone-title {
             font-weight: 700;
-            font-size: 0.95rem;
-            margin-bottom: 0.2rem;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.01em;
         }
 
         .milestone-body {
             font-size: 0.85rem;
-            color: #8a8078;
+            color: var(--text-muted);
+            line-height: 1.5;
         }
 
-        /* Community teaser */
-        .community {
-            padding: 3rem 0;
+        /* Community card (clickable, inline in hero) */
+        .community-card {
+            display: block;
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+            text-decoration: none;
+            color: inherit;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--white);
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .community-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border-color: var(--blue);
         }
 
         .stats-bar {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 1px;
-            background: #e8e4df;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
+            background: var(--border);
         }
 
         .stat {
-            flex: 1;
-            background: #fff;
-            padding: 0.75rem;
+            background: var(--white);
+            padding: 1.25rem 1rem;
             text-align: center;
         }
 
         .stat-value {
-            font-size: 1.25rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
             font-weight: 700;
             font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
         }
 
         .stat-label {
             font-size: 0.7rem;
-            color: #8a8078;
+            color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
+            margin-top: 0.2rem;
+            font-weight: 500;
         }
 
         .community-link {
             text-align: center;
+            padding: 0.65rem 1rem;
+            background: var(--bg-warm);
+            color: var(--blue);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background 0.15s;
         }
 
-        .community-link a {
-            color: #3a75d4;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
+        .community-card:hover .community-link {
+            background: #eef3fb;
         }
-
-        .community-link a:hover { text-decoration: underline; }
 
         /* Final CTA */
         .final-cta {
+            max-width: 640px;
+            margin: 0 auto;
             text-align: center;
-            padding: 3rem 1.5rem;
-            margin: 2rem 0;
-            background: #f5f3f0;
-            border-radius: 12px;
+            padding: 5rem 1.5rem 4rem;
         }
 
         .final-cta h2 {
-            font-size: 1.3rem;
+            font-size: clamp(1.5rem, 4vw, 2rem);
             font-weight: 700;
+            letter-spacing: -0.03em;
             margin-bottom: 0.5rem;
-            text-transform: none;
-            letter-spacing: -0.01em;
-            color: #2a2520;
-            border-bottom: none;
-            padding-bottom: 0;
         }
 
-        .final-cta p {
-            color: #8a8078;
-            font-size: 0.85rem;
-            margin-bottom: 1.5rem;
+        .final-cta .sub {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
         }
 
-        .final-cta .cta-primary { margin-bottom: 0.75rem; }
+        .final-cta .btn-primary { margin-bottom: 1rem; }
 
-        .final-cta .codesign-note {
+        .codesign-note {
             font-size: 0.75rem;
-            color: #a89e95;
+            color: var(--text-faint);
         }
 
         /* Footer */
         footer {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #a89e95;
-            padding: 2rem 1.5rem 3rem;
+            border-top: 1px solid var(--border);
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            font-size: 0.78rem;
+            color: var(--text-faint);
         }
-
-        footer p { margin-bottom: 0.5rem; }
 
         footer a {
-            color: #8a8078;
+            color: var(--text-muted);
             text-decoration: none;
+            transition: color 0.15s;
         }
 
-        footer a:hover { text-decoration: underline; }
+        footer a:hover { color: var(--text); }
 
         .footer-links {
             display: flex;
-            justify-content: center;
             gap: 1.5rem;
         }
 
         /* Responsive */
-        @media (max-width: 520px) {
-            .hero { padding: 3.5rem 1rem 3rem; }
-            .cta-primary { width: 100%; text-align: center; }
-            .features-grid { gap: 1.5rem; }
-            .final-cta .cta-primary { width: 100%; text-align: center; }
+        @media (max-width: 640px) {
+            .nav { padding: 1rem; }
+            .nav-links { gap: 1rem; }
+            .nav-links .hide-mobile { display: none; }
+            .hero { padding: 2.5rem 1rem 3rem; }
+            .hero h1 { font-size: 2rem; }
+            .hero-cta { flex-direction: column; }
+            .btn-platform { width: 100%; }
+            .btn-primary { width: 100%; justify-content: center; }
+            .features { padding: 2rem 1rem 3rem; }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .milestones { padding: 3rem 1rem 2rem; }
+            .stats-bar { grid-template-columns: 1fr; }
+            .stat { padding: 0.75rem; }
+            footer {
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Nav -->
+    <nav class="nav">
+        <a href="./" class="nav-brand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M6 2L20 16h-6.5l3.8 9.5-3.6 1.4L9.9 17.5 6 21.5V2z"/>
+            </svg>
+            MouseStride
+        </a>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="https://github.com/trustbe/MouseStride" class="hide-mobile">GitHub</a>
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="nav-cta">Download</a>
+        </div>
+    </nav>
+
     <!-- Hero -->
     <div class="hero">
-        <div class="hero-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 32 32" fill="currentColor">
-                <path d="M6 2L20 16h-6.5l3.8 9.5-3.6 1.4L9.9 17.5 6 21.5V2z"/>
-                <path d="M22 8l2.5-2.5M22 13h3.5M25.5 18l-2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
-            </svg>
+        <div class="hero-badge">
+            <span>&#9679;</span> Free & open source
         </div>
-        <h1>Your mouse runs marathons.</h1>
-        <p class="hero-sub">A tiny macOS menu bar app that measures how far your cursor travels. Every millimeter counts.</p>
+        <h1>Your mouse runs<br>marathons.</h1>
+        <p class="hero-sub">A tiny menu bar app that measures how far your cursor travels. Every millimeter counts.</p>
 
-        <div class="hero-counter" id="hero-counter">&mdash;</div>
-        <div class="hero-counter-label">traveled by the community</div>
-
-        <div class="cta-group">
-            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="cta-primary">Download for macOS</a>
-            <a href="https://github.com/trustbe/MouseStride" class="cta-secondary">Free & open source</a>
+        <div class="hero-counter-wrap">
+            <div class="hero-counter" id="hero-counter">&mdash;</div>
+            <div class="hero-counter-label">traveled by the community</div>
         </div>
-        <p class="hero-note">macOS 13+ · Universal binary · No account needed</p>
-    </div>
 
-    <!-- Features -->
-    <div class="container">
-        <section class="features">
-            <div class="features-grid">
-                <div class="feature">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                            <path d="M6 4L18 16h-5.5l3.2 8-3 1.2L9.4 17 6 20.5V4z"/>
-                            <path d="M20 6c0 0 2-1 4 0s2 3 2 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-                            <path d="M21 11c0 0 2-0.5 3.5 0.5s1.5 2.5 1.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-                            <circle cx="26" cy="22" r="1.5"/>
-                            <circle cx="23" cy="25" r="1"/>
-                            <circle cx="27" cy="27" r="1"/>
-                        </svg>
-                    </div>
-                    <h3>Real-Time Tracking</h3>
-                    <p>DPI-aware measurement. Metric or imperial, chosen automatically.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                            <path d="M16 4l3.5 7.5H27l-6 5 2.5 7.5L16 19l-7.5 5 2.5-7.5-6-5h7.5z"/>
-                        </svg>
-                    </div>
-                    <h3>Milestones & Achievements</h3>
-                    <p>From 400m hurdles to full marathons. Your cursor earns badges.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                            <path d="M20 8a8 8 0 1 1-4 1"/>
-                            <path d="M12 24a8 8 0 1 1 4-1"/>
-                            <path d="M20 8l-2-2M20 8l-2 2"/>
-                            <path d="M12 24l2 2M12 24l2-2"/>
-                        </svg>
-                    </div>
-                    <h3>Community Sync</h3>
-                    <p>Anonymous leaderboard. See how your cursor stacks up.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Milestones -->
-        <section class="milestones">
-            <div class="section-title">The Journey</div>
-            <div class="timeline" id="timeline">
-                <div class="milestone">
-                    <div class="milestone-dist">400 m</div>
-                    <div class="milestone-title">400m Hurdles!</div>
-                    <div class="milestone-body">Your only obstacles were the keyboard and that coffee mug.</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">800 m</div>
-                    <div class="milestone-title">800m!</div>
-                    <div class="milestone-body">Middle-distance champion of the desk. The crowd goes mild!</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">1 mile</div>
-                    <div class="milestone-title">One Mile!</div>
-                    <div class="milestone-body">Your mouse is officially a jogger. Time for a tiny headband.</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">5 km</div>
-                    <div class="milestone-title">5K Complete!</div>
-                    <div class="milestone-body">Your mouse deserves a participation medal and a banana.</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">10 km</div>
-                    <div class="milestone-title">10K!</div>
-                    <div class="milestone-body">Your mouse is now a serious runner. Should we get it tiny shoes?</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">21.1 km</div>
-                    <div class="milestone-title">Half Marathon!</div>
-                    <div class="milestone-body">21.1 km! Your mouse is halfway to eternal glory. Don't stop now!</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">42.195 km</div>
-                    <div class="milestone-title">MARATHON COMPLETE!</div>
-                    <div class="milestone-body">42.195 km! Your mouse needs new shoes, a massage, and a vacation.</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">100 km</div>
-                    <div class="milestone-title">100 km Ultramarathon!</div>
-                    <div class="milestone-body">Your mouse has officially left the city. Send a postcard!</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">250 km</div>
-                    <div class="milestone-title">250 km!</div>
-                    <div class="milestone-body">Your mouse could've walked from Prague to Brno by now.</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">500 km</div>
-                    <div class="milestone-title">500 km!</div>
-                    <div class="milestone-body">Your mouse is an intercity traveler. Does it need a train ticket?</div>
-                </div>
-                <div class="milestone">
-                    <div class="milestone-dist">1,000 km</div>
-                    <div class="milestone-title">1,000 km!</div>
-                    <div class="milestone-body">Your mouse belongs in a museum. Or at least in the Hall of Fame.</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Community Stats Teaser -->
-        <section class="community">
-            <div class="section-title">Community</div>
+        <!-- Community Stats -->
+        <a href="dashboard.html" class="community-card">
             <div class="stats-bar">
                 <div class="stat">
                     <div class="stat-value" id="total-distance">&mdash;</div>
@@ -478,27 +598,167 @@
                     <div class="stat-label">Avg / Day</div>
                 </div>
             </div>
-            <div class="community-link">
-                <a href="dashboard.html">View Community Dashboard →</a>
-            </div>
-        </section>
+            <div class="community-link">View Community Dashboard &rarr;</div>
+        </a>
 
-        <!-- Final CTA -->
-        <div class="final-cta">
-            <h2>Start measuring.</h2>
-            <p>Free, lightweight, no account required.</p>
-            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="cta-primary">Download for macOS</a>
-            <div class="codesign-note">Not code-signed — right-click → Open on first launch.</div>
+        <div class="hero-cta" id="hero-cta">
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="btn-platform" data-platform="mac">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <span class="btn-platform-label">macOS</span>
+                <span class="btn-platform-ext">.dmg</span>
+            </a>
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="btn-platform" data-platform="windows">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.5l8-1.1V12H3zm0 .5h8v6.6l-8-1.1V12.5zM11.5 5.3l9.5-1.3v8h-9.5V5.3zM11.5 12.5H21v8l-9.5-1.3V12.5z"/></svg>
+                <span class="btn-platform-label">Windows</span>
+                <span class="btn-platform-ext">.msi</span>
+            </a>
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="btn-platform" data-platform="linux">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.368 1.884 1.43.199.02.397.005.585-.04.188.04.386.06.585.04.77-.062 1.492-.651 1.883-1.43l.003-.003a1.56 1.56 0 00.114-.333c1.003.067 1.878-.258 2.577-.2 1.03.065 1.673.331 2.26.334.238.482.683.83 1.208.946.75.2 1.69-.004 2.616-.47.863-.465 1.964-.4 2.774-.6.405-.131.766-.267.94-.601.174-.34.142-.804-.107-1.484-.075-.242-.018-.571.04-.97.028-.135.055-.337.055-.536.004-.208-.042-.413-.132-.602-.206-.411-.551-.544-.864-.68-.312-.133-.598-.2-.797-.4a2.69 2.69 0 01-.663-.839.424.424 0 00-.11-.135c.123-.805-.009-1.657-.287-2.489-.589-1.77-1.831-3.47-2.716-4.521-.75-1.067-.974-1.928-1.05-3.02-.065-1.491 1.056-5.965-3.17-6.298A5.89 5.89 0 0012.504 0zm-.218 1.028c.146-.005.296.003.449.018 3.193.266 2.587 3.748 2.58 5.855-.003.876.166 1.754.92 2.832.849 1.009 2.06 2.645 2.606 4.29.263.794.378 1.56.276 2.24-.036.24-.088.47-.156.686a.606.606 0 00-.087.15c-.085.17-.185.326-.326.458-.17.166-.369.24-.598.353-.228.114-.495.228-.734.514-.16.2-.264.38-.329.535-.068.159-.1.287-.113.39-.024.207.008.378.032.51.024.135.053.252.035.336-.27.753-.065.68-.023.796-.094.13-.259.213-.56.32-.63.226-1.687.178-2.497.58-.814.4-1.655.561-2.272.395-.303-.084-.56-.262-.713-.57-.166-.032-.36-.075-.569-.064-.69.045-1.248.272-2.372.337-.843.048-1.498-.324-2.156-.57-.66-.246-1.314-.36-2.024-.136-.303.096-.56.27-.73.468-.173.198-.313.392-.463.496-.075.052-.153.085-.245.097-.093.013-.196-.003-.326-.074a.755.755 0 01-.277-.274c-.099-.148-.156-.33-.11-.492.094-.33.048-.606.005-.842-.043-.236-.074-.432-.003-.62.068-.177.175-.318.319-.443.143-.125.32-.227.5-.32.183-.094.367-.176.502-.33.27-.31.397-.65.548-.909.155-.262.309-.445.52-.663a.476.476 0 00.133-.235c-.14-.86.005-1.773.31-2.688.562-1.685 1.787-3.389 2.636-4.4.766-1.078.933-2.074 1.012-3.167.058-.816-.122-2.274.55-3.476.337-.603.822-1.08 1.508-1.29.247-.075.513-.115.79-.126z"/></svg>
+                <span class="btn-platform-label">Linux</span>
+                <span class="btn-platform-ext">.AppImage</span>
+            </a>
         </div>
+        <div style="text-align: center; margin-top: 0.75rem;">
+            <a href="https://github.com/trustbe/MouseStride" class="btn-secondary">
+                View on GitHub
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
+            </a>
+        </div>
+        <p class="hero-note">macOS<span>&middot;</span>Windows<span>&middot;</span>Linux<span>&middot;</span>No account needed</p>
+    </div>
+
+    <div class="dot-divider"><i></i><i></i><i></i></div>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M6 4L18 16h-5.5l3.2 8-3 1.2L9.4 17 6 20.5V4z"/>
+                        <path d="M20 6c0 0 2-1 4 0s2 3 2 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                        <path d="M21 11c0 0 2-0.5 3.5 0.5s1.5 2.5 1.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                    </svg>
+                </div>
+                <h3>Real-Time Tracking</h3>
+                <p>DPI-aware measurement. Metric or imperial, chosen automatically by your locale.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 32 32" fill="currentColor">
+                        <path d="M16 4l3.5 7.5H27l-6 5 2.5 7.5L16 19l-7.5 5 2.5-7.5-6-5h7.5z"/>
+                    </svg>
+                </div>
+                <h3>Milestones</h3>
+                <p>From 400m hurdles to full marathons. Your cursor earns badges along the way.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M20 8a8 8 0 1 1-4 1"/>
+                        <path d="M12 24a8 8 0 1 1 4-1"/>
+                    </svg>
+                </div>
+                <h3>Community Sync</h3>
+                <p>Anonymous leaderboard. See how your cursor stacks up globally.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Milestones -->
+    <section class="milestones">
+        <div class="section-label">The Journey</div>
+        <h2 class="section-heading">11 milestones. One very tired mouse.</h2>
+        <div class="timeline" id="timeline">
+            <div class="milestone">
+                <div class="milestone-dist">400 m</div>
+                <div class="milestone-title">400m Hurdles!</div>
+                <div class="milestone-body">Your only obstacles were the keyboard and that coffee mug.</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">800 m</div>
+                <div class="milestone-title">800m!</div>
+                <div class="milestone-body">Middle-distance champion of the desk. The crowd goes mild!</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">1 mile</div>
+                <div class="milestone-title">One Mile!</div>
+                <div class="milestone-body">Your mouse is officially a jogger. Time for a tiny headband.</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">5 km</div>
+                <div class="milestone-title">5K Complete!</div>
+                <div class="milestone-body">Your mouse deserves a participation medal and a banana.</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">10 km</div>
+                <div class="milestone-title">10K!</div>
+                <div class="milestone-body">Your mouse is now a serious runner. Should we get it tiny shoes?</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">21.1 km</div>
+                <div class="milestone-title">Half Marathon!</div>
+                <div class="milestone-body">21.1 km! Your mouse is halfway to eternal glory. Don't stop now!</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">42.195 km</div>
+                <div class="milestone-title">MARATHON COMPLETE!</div>
+                <div class="milestone-body">42.195 km! Your mouse needs new shoes, a massage, and a vacation.</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">100 km</div>
+                <div class="milestone-title">100 km Ultramarathon!</div>
+                <div class="milestone-body">Your mouse has officially left the city. Send a postcard!</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">250 km</div>
+                <div class="milestone-title">250 km!</div>
+                <div class="milestone-body">Your mouse could've walked from Prague to Brno by now.</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">500 km</div>
+                <div class="milestone-title">500 km!</div>
+                <div class="milestone-body">Your mouse is an intercity traveler. Does it need a train ticket?</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dist">1,000 km</div>
+                <div class="milestone-title">1,000 km!</div>
+                <div class="milestone-body">Your mouse belongs in a museum. Or at least in the Hall of Fame.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <div class="final-cta">
+        <h2>Start measuring.</h2>
+        <p class="sub">Free, lightweight, no account required.</p>
+        <div class="hero-cta" id="final-cta">
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="btn-platform" data-platform="mac">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <span class="btn-platform-label">macOS</span>
+                <span class="btn-platform-ext">.dmg</span>
+            </a>
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="btn-platform" data-platform="windows">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.5l8-1.1V12H3zm0 .5h8v6.6l-8-1.1V12.5zM11.5 5.3l9.5-1.3v8h-9.5V5.3zM11.5 12.5H21v8l-9.5-1.3V12.5z"/></svg>
+                <span class="btn-platform-label">Windows</span>
+                <span class="btn-platform-ext">.msi</span>
+            </a>
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" class="btn-platform" data-platform="linux">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.368 1.884 1.43.199.02.397.005.585-.04.188.04.386.06.585.04.77-.062 1.492-.651 1.883-1.43l.003-.003a1.56 1.56 0 00.114-.333c1.003.067 1.878-.258 2.577-.2 1.03.065 1.673.331 2.26.334.238.482.683.83 1.208.946.75.2 1.69-.004 2.616-.47.863-.465 1.964-.4 2.774-.6.405-.131.766-.267.94-.601.174-.34.142-.804-.107-1.484-.075-.242-.018-.571.04-.97.028-.135.055-.337.055-.536.004-.208-.042-.413-.132-.602-.206-.411-.551-.544-.864-.68-.312-.133-.598-.2-.797-.4a2.69 2.69 0 01-.663-.839.424.424 0 00-.11-.135c.123-.805-.009-1.657-.287-2.489-.589-1.77-1.831-3.47-2.716-4.521-.75-1.067-.974-1.928-1.05-3.02-.065-1.491 1.056-5.965-3.17-6.298A5.89 5.89 0 0012.504 0zm-.218 1.028c.146-.005.296.003.449.018 3.193.266 2.587 3.748 2.58 5.855-.003.876.166 1.754.92 2.832.849 1.009 2.06 2.645 2.606 4.29.263.794.378 1.56.276 2.24-.036.24-.088.47-.156.686a.606.606 0 00-.087.15c-.085.17-.185.326-.326.458-.17.166-.369.24-.598.353-.228.114-.495.228-.734.514-.16.2-.264.38-.329.535-.068.159-.1.287-.113.39-.024.207.008.378.032.51.024.135.053.252.035.336-.27.753-.065.68-.023.796-.094.13-.259.213-.56.32-.63.226-1.687.178-2.497.58-.814.4-1.655.561-2.272.395-.303-.084-.56-.262-.713-.57-.166-.032-.36-.075-.569-.064-.69.045-1.248.272-2.372.337-.843.048-1.498-.324-2.156-.57-.66-.246-1.314-.36-2.024-.136-.303.096-.56.27-.73.468-.173.198-.313.392-.463.496-.075.052-.153.085-.245.097-.093.013-.196-.003-.326-.074a.755.755 0 01-.277-.274c-.099-.148-.156-.33-.11-.492.094-.33.048-.606.005-.842-.043-.236-.074-.432-.003-.62.068-.177.175-.318.319-.443.143-.125.32-.227.5-.32.183-.094.367-.176.502-.33.27-.31.397-.65.548-.909.155-.262.309-.445.52-.663a.476.476 0 00.133-.235c-.14-.86.005-1.773.31-2.688.562-1.685 1.787-3.389 2.636-4.4.766-1.078.933-2.074 1.012-3.167.058-.816-.122-2.274.55-3.476.337-.603.822-1.08 1.508-1.29.247-.075.513-.115.79-.126z"/></svg>
+                <span class="btn-platform-label">Linux</span>
+                <span class="btn-platform-ext">.AppImage</span>
+            </a>
+        </div>
+        <div class="codesign-note">macOS: right-click &rarr; Open on first launch (not code-signed)</div>
     </div>
 
     <!-- Footer -->
     <footer>
-        <p>MouseStride is free, open source, and respects your privacy.</p>
+        <span>MouseStride is free, open source, and respects your privacy.</span>
         <div class="footer-links">
             <a href="https://github.com/trustbe/MouseStride">GitHub</a>
-            <a href="dashboard.html">Community Dashboard</a>
-            <a href="https://github.com/trustbe/MouseStride/blob/main/LICENSE">MIT License</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="https://github.com/trustbe/MouseStride/blob/main/LICENSE">MIT</a>
         </div>
     </footer>
 
@@ -518,17 +778,15 @@
             return mm.toFixed(0) + ' mm';
         }
 
-        // Ease-out cubic
-        function easeOutCubic(t) {
-            return 1 - Math.pow(1 - t, 3);
+        function easeOutQuart(t) {
+            return 1 - Math.pow(1 - t, 4);
         }
 
-        // Animate counter from 0 to target over duration ms
         function animateCounter(el, targetMM, duration) {
             const start = performance.now();
             function tick(now) {
                 const t = Math.min((now - start) / duration, 1);
-                const current = targetMM * easeOutCubic(t);
+                const current = targetMM * easeOutQuart(t);
                 el.textContent = formatMM(current);
                 if (t < 1) requestAnimationFrame(tick);
             }
@@ -543,7 +801,6 @@
         async function loadStats() {
             try {
                 const entries = await query('entries?order=created_at.desc&limit=200');
-
                 if (!entries.length) return;
 
                 const byName = {};
@@ -557,39 +814,44 @@
                 const totalMice = latest.length;
                 const avgDaily = entries.reduce((s, e) => s + e.today_mm, 0) / entries.length;
 
-                // Hero counter — animate from 0
                 animateCounter(document.getElementById('hero-counter'), totalDist, 3000);
-
-                // Community stats bar
                 document.getElementById('total-distance').textContent = formatMM(totalDist);
                 document.getElementById('total-mice').textContent = totalMice;
                 document.getElementById('avg-daily').textContent = formatMM(avgDaily);
-
             } catch (err) {
                 console.error('Failed to load stats:', err);
-                // Fallback: show a marathon distance
                 document.getElementById('hero-counter').textContent = '42.2 km';
             }
         }
 
-        // Milestone scroll animation
         function initMilestoneAnimations() {
             const milestones = document.querySelectorAll('.milestone');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry, i) => {
+            const observer = new IntersectionObserver((observed) => {
+                observed.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        // Stagger the animations
                         const idx = Array.from(milestones).indexOf(entry.target);
-                        setTimeout(() => {
-                            entry.target.classList.add('visible');
-                        }, idx * 60);
+                        setTimeout(() => entry.target.classList.add('visible'), idx * 80);
                         observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.15 });
+            }, { threshold: 0.1 });
 
             milestones.forEach(m => observer.observe(m));
         }
+
+        // OS detection — highlight matching platform button
+        const detectedOS = (() => {
+            const ua = navigator.userAgent;
+            if (ua.includes('Win')) return 'windows';
+            if (ua.includes('Linux')) return 'linux';
+            return 'mac';
+        })();
+
+        document.querySelectorAll('.btn-platform').forEach(btn => {
+            if (btn.dataset.platform === detectedOS) {
+                btn.classList.add('btn-primary');
+            }
+        });
 
         loadStats();
         initMilestoneAnimations();
