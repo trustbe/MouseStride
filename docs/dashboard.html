@@ -181,20 +181,23 @@
             padding-top: 0.4rem;
         }
 
-        .nav-icon {
+        .nav-btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            background: none;
+            gap: 0.35rem;
             border: none;
-            padding: 0.3rem;
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 500;
             cursor: pointer;
-            border-radius: 4px;
+            font-family: inherit;
             transition: opacity 0.15s;
-            opacity: 0.55;
         }
-        .nav-icon:hover { opacity: 1; }
-        .nav-icon img { display: block; }
+        .nav-btn:hover { opacity: 0.85; }
+        .nav-btn img { display: block; filter: brightness(0) invert(1); }
+        .nav-btn--dark { background: #14171a; color: #fff; }
+        .nav-btn--blue { background: #1877F2; color: #fff; }
     </style>
 </head>
 <body>
@@ -204,11 +207,11 @@
             <p class="subtitle">Community mouse distance tracker</p>
         </div>
         <div class="dash-actions">
-            <button class="nav-icon" onclick="openPost()" title="Post">
-                <img src="ic-a.png" width="16" height="16" alt="">
+            <button class="nav-btn nav-btn--dark" onclick="openPost()" title="Post">
+                <img src="ic-a.png" width="14" height="14" alt=""> Post
             </button>
-            <button class="nav-icon" onclick="openLink()" title="Share">
-                <img src="ic-b.png" width="16" height="16" alt="">
+            <button class="nav-btn nav-btn--blue" onclick="openLink()" title="Share">
+                <img src="ic-b.png" width="14" height="14" alt=""> Share
             </button>
         </div>
     </header>
