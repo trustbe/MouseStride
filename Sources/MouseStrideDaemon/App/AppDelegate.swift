@@ -3,10 +3,10 @@ import MouseStrideCore
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
-    private let mouseTracker = MouseTracker()
-    private let distanceCalculator = DistanceCalculator()
-    private let persistence: PersistenceService
-    private let nameService: AnonymousNameService
+    private var mouseTracker: MouseTracker!
+    private var distanceCalculator: DistanceCalculator!
+    private var persistence: PersistenceService!
+    private var nameService: AnonymousNameService!
 
     private var showingAllTime = false
     private var todayMM: Double = 0
@@ -21,14 +21,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Locale.current.measurementSystem == .metric ? .metric : .imperial
     }
 
-    override init() {
-        let defaults = UserDefaults(suiteName: "com.mousestride.daemon")!
-        self.persistence = PersistenceService(defaults: defaults)
-        self.nameService = AnonymousNameService(defaults: defaults)
-        super.init()
-    }
-
     func applicationDidFinishLaunching(_ notification: Notification) {
+        let defaults = UserDefaults(suiteName: "com.mousestride.daemon") ?? .standard
+        persistence = PersistenceService(defaults: defaults)
+        nameService = AnonymousNameService(defaults: defaults)
+        mouseTracker = MouseTracker()
+        distanceCalculator = DistanceCalculator()
+
         totalMM = persistence.totalDistanceMM
         todayMM = persistence.todayDistanceMM()
         persistence.pruneOldEntries()
