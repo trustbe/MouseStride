@@ -89,7 +89,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func openDashboard() {
         syncToDashboard()
         let name = nameService.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        if let url = URL(string: "https://trustbe.github.io/MouseStride/dashboard.html?highlight=\(name)") {
+        if let url = URL(string: "https://mousestride.trustbe.com/dashboard.html?highlight=\(name)") {
             NSWorkspace.shared.open(url)
         }
     }

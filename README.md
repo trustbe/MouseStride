@@ -84,7 +84,7 @@ Uninstall via **Settings → Apps → MouseStride → Uninstall**, or run the MS
 
 ## Community Dashboard
 
-See how your cursor stacks up: [Community Dashboard](https://trustbe.github.io/MouseStride/dashboard.html)
+See how your cursor stacks up: [Community Dashboard](https://mousestride.trustbe.com/dashboard.html)
 
 ## License
 

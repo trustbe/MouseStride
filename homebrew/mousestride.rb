@@ -5,7 +5,7 @@ cask "mousestride" do
   url "https://github.com/trustbe/MouseStride/releases/download/v#{version}/MouseStrideDaemon-v#{version}.zip"
   name "MouseStride"
   desc "Lightweight mouse distance tracker for macOS"
-  homepage "https://trustbe.github.io/MouseStride/"
+  homepage "https://mousestride.trustbe.com/"
 
   depends_on macos: ">= :ventura"
 

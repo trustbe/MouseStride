@@ -184,7 +184,7 @@ fn run_with_tray(
             } else if event.id == dashboard_id {
                 sync_dashboard(&persistence, &name);
                 let encoded = name.replace(' ', "%20");
-                let url = format!("https://trustbe.github.io/MouseStride/dashboard.html?highlight={}", encoded);
+                let url = format!("https://mousestride.trustbe.com/dashboard.html?highlight={}", encoded);
                 let _ = std::process::Command::new("cmd")
                     .args(["/C", "start", "", &url])
                     .spawn();
