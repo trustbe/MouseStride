@@ -24,6 +24,16 @@ Grab the latest DMG from [GitHub Releases](https://github.com/trustbe/MouseStrid
 
 > **Note:** MouseStride is not code-signed. On first launch, macOS will block it. Right-click the app → **Open** → click **Open** in the dialog to allow it.
 
+### Homebrew (daemon only)
+
+A lightweight background daemon — tracks distance, shows live stats in the menu bar, auto-syncs to the community dashboard. No UI popover.
+
+```bash
+brew tap trustbe/mousestride
+brew install --cask mousestride
+open /Applications/MouseStrideDaemon.app
+```
+
 ### Build from source
 
 ```bash
