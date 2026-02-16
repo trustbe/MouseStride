@@ -8,7 +8,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var persistence: PersistenceService!
     private var nameService: AnonymousNameService!
 
-    private var showingAllTime = false
     private var todayMM: Double = 0
     private var totalMM: Double = 0
     private var pendingMM: Double = 0
@@ -36,6 +35,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         mouseTracker.start()
         startTimers()
         setupTerminationObserver()
+        syncToDashboard()
     }
 
     // MARK: - Status Item
@@ -46,26 +46,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if let button = statusItem.button {
             button.target = self
             button.action = #selector(statusItemClicked(_:))
-            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
 
         updateDisplay()
     }
 
     @objc private func statusItemClicked(_ sender: NSStatusBarButton) {
-        guard let event = NSApp.currentEvent else { return }
-
-        if event.type == .rightMouseUp {
-            showContextMenu()
-        } else {
-            showingAllTime.toggle()
-            updateDisplay()
-        }
-    }
-
-    private func showContextMenu() {
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Open Dashboard", action: #selector(openDashboard), keyEquivalent: ""))
+
+        let todayItem = NSMenuItem(title: "Today: \(DistanceUnit.autoFormat(mm: todayMM, system: unitSystem))", action: nil, keyEquivalent: "")
+        todayItem.image = NSImage(systemSymbolName: "calendar", accessibilityDescription: nil)
+        todayItem.isEnabled = false
+        menu.addItem(todayItem)
+
+        let totalItem = NSMenuItem(title: "Total: \(DistanceUnit.allTimeFormat(mm: totalMM, system: unitSystem))", action: nil, keyEquivalent: "")
+        totalItem.image = NSImage(systemSymbolName: "infinity", accessibilityDescription: nil)
+        totalItem.isEnabled = false
+        menu.addItem(totalItem)
+
+        menu.addItem(.separator())
+
+        let challengeItem = NSMenuItem(title: "Challenge (\(nameService.name))", action: #selector(openDashboard), keyEquivalent: "")
+        challengeItem.image = NSImage(systemSymbolName: "trophy.fill", accessibilityDescription: nil)
+        menu.addItem(challengeItem)
+
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit MouseStride", action: #selector(quitApp), keyEquivalent: "q"))
 
@@ -75,6 +79,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openDashboard() {
+        syncToDashboard()
         let name = nameService.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         if let url = URL(string: "https://trustbe.github.io/MouseStride/dashboard.html?highlight=\(name)") {
             NSWorkspace.shared.open(url)
@@ -91,11 +96,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func updateDisplay() {
         guard let button = statusItem.button else { return }
 
-        let mm = showingAllTime ? totalMM : todayMM
-        let prefix = showingAllTime ? "\u{03A3} " : "\u{2197} "
-        let formatted = DistanceUnit.autoFormat(mm: mm, system: unitSystem)
+        let formatted = DistanceUnit.autoFormat(mm: todayMM, system: unitSystem)
 
-        button.title = prefix + formatted
+        button.title = formatted
         button.image = NSImage(systemSymbolName: "cursorarrow.motionlines", accessibilityDescription: "MouseStride")
         button.imagePosition = .imageLeading
     }
