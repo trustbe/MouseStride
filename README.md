@@ -27,7 +27,7 @@ The installer is signed and notarized by Apple, so Gatekeeper will not warn you.
 ```bash
 git clone https://github.com/trustbe/MouseStride.git
 cd MouseStride
-make daemon-bundle
+make bundle
 open MouseStrideDaemon.app
 ```
 
@@ -71,7 +71,7 @@ Uninstall via **Settings → Apps → MouseStride → Uninstall**, or run the MS
 ## Privacy
 
 - No account or login required
-- All tracking data stored locally via UserDefaults
+- All tracking data stored locally on your device
 - Community sync is anonymous — only distance and a random animal name are shared
 - No analytics, no telemetry
 
