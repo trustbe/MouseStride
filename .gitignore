@@ -25,3 +25,7 @@ MouseStride-*.pkg
 *.key
 *.cer
 *.entitlements.local
+
+# Claude Code project context (local only, never commit)
+CLAUDE.md
+CLAUDE.local.md
