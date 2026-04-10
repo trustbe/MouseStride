@@ -16,18 +16,11 @@ A lightweight system tray app that tracks how far your mouse cursor travels. Ava
 
 **Requirements:** macOS 13.0 (Ventura) or later
 
-#### Installer (recommended)
+#### Installer
 
 Download the [latest **MouseStride.pkg**](https://github.com/trustbe/MouseStride/releases/latest), double-click it, and follow the installer. The menu-bar icon appears immediately after install. On first mouse movement, macOS will ask permission for Input Monitoring — click **Allow**.
 
 The installer is signed and notarized by Apple, so Gatekeeper will not warn you.
-
-#### Homebrew
-
-```bash
-brew tap trustbe/mousestride
-brew install --cask mousestride
-```
 
 #### Build from source
 
@@ -57,14 +50,6 @@ cargo build --release
 ## Uninstall
 
 ### macOS
-
-#### Homebrew
-
-```bash
-brew uninstall --cask mousestride
-```
-
-#### Manual
 
 ```bash
 rm -rf /Applications/MouseStrideDaemon.app

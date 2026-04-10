@@ -236,47 +236,6 @@
             opacity: 0.7;
         }
 
-        .brew-install {
-            background: var(--bg);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 1rem 1.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .brew-install code {
-            font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
-            font-size: 0.9rem;
-            color: var(--text);
-            user-select: all;
-        }
-
-        .brew-apple {
-            color: var(--text-muted);
-            flex-shrink: 0;
-        }
-
-        .brew-copy {
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 0.35rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.15s, border-color 0.15s;
-            flex-shrink: 0;
-        }
-
-        .brew-copy:hover {
-            color: var(--text);
-            border-color: var(--text-muted);
-        }
-
         .btn-secondary {
             display: inline-flex;
             align-items: center;
@@ -639,14 +598,7 @@
                 <span class="btn-platform-ext" id="dl-windows-ext">.msi installer</span>
             </a>
         </div>
-        <div class="brew-install" style="margin-top: 1.25rem;">
-            <svg class="brew-apple" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            <code>brew install --cask trustbe/mousestride/mousestride</code>
-            <button class="brew-copy" onclick="copyBrew(this)" title="Copy to clipboard">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-            </button>
-        </div>
-        <div style="text-align: center; margin-top: 0.75rem;">
+        <div style="text-align: center; margin-top: 1.25rem;">
             <a href="https://github.com/trustbe/MouseStride#build-from-source" class="btn-secondary">
                 Build from source
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
@@ -810,14 +762,6 @@
                 })
                 .catch(() => { /* silent: links fall back to /releases/latest page */ });
         })();
-
-        function copyBrew(btn) {
-            navigator.clipboard.writeText('brew install --cask trustbe/mousestride/mousestride');
-            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
-            setTimeout(() => {
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
-            }, 2000);
-        }
 
         const SUPABASE_URL = 'https://ygtemljaowgiypcberhz.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_od7WoRDYP46HKboEp2s1aA_HXWRf54X';
