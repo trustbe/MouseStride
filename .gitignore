@@ -7,8 +7,21 @@ xcuserdata/
 
 # Rust
 target/
-daemon-windows/Cargo.lock
 
 # macOS
 .DS_Store
 *.dmg
+
+# Playwright MCP cache (screenshots, console logs, page snapshots)
+.playwright-mcp/
+
+# Release artifacts (produced by `make zip` / `make pkg` locally)
+MouseStrideDaemon-*.zip
+MouseStride-*.pkg
+
+# Credentials (safety net — should never be in the repo)
+*.p12
+*.pfx
+*.key
+*.cer
+*.entitlements.local
