@@ -627,14 +627,24 @@
         </a>
 
         <div class="section-label" style="text-align: center; margin-bottom: 1rem;">Get started</div>
-        <div class="hero-cta" id="hero-cta">
-            <div class="brew-install">
-                <svg class="brew-apple" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                <code>brew tap trustbe/mousestride && brew install --cask mousestride</code>
-                <button class="brew-copy" onclick="copyBrew(this)" title="Copy to clipboard">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                </button>
-            </div>
+        <div class="hero-cta" id="hero-cta" style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" id="dl-macos" class="btn-platform btn-primary" download>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <span class="btn-platform-label">Download for macOS</span>
+                <span class="btn-platform-ext" id="dl-macos-ext">.pkg installer</span>
+            </a>
+            <a href="https://github.com/trustbe/MouseStride/releases/latest" id="dl-windows" class="btn-platform" download>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5L10.5 4.5V11.5H3V5.5M11.5 4.3L21 3V11.5H11.5V4.3M3 12.5H10.5V19.5L3 18.5V12.5M11.5 12.5H21V21L11.5 19.7V12.5Z"/></svg>
+                <span class="btn-platform-label">Download for Windows</span>
+                <span class="btn-platform-ext" id="dl-windows-ext">.msi installer</span>
+            </a>
+        </div>
+        <div class="brew-install" style="margin-top: 1.25rem;">
+            <svg class="brew-apple" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <code>brew install --cask trustbe/mousestride/mousestride</code>
+            <button class="brew-copy" onclick="copyBrew(this)" title="Copy to clipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
         </div>
         <div style="text-align: center; margin-top: 0.75rem;">
             <a href="https://github.com/trustbe/MouseStride#build-from-source" class="btn-secondary">
@@ -642,8 +652,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
             </a>
         </div>
-        <p class="hero-note">macOS 13+<span>&middot;</span>Homebrew required<span>&middot;</span>No account needed</p>
-        <p class="hero-note" style="opacity: 0.5; margin-top: 0.25rem;">Windows coming soon</p>
+        <p class="hero-note">macOS 13+<span>&middot;</span>Windows 10+<span>&middot;</span>Signed &amp; notarized<span>&middot;</span>No account needed</p>
     </div>
 
     <div class="dot-divider"><i></i><i></i><i></i></div>
@@ -769,8 +778,41 @@
             }
         })();
 
+        // Fetch latest release and set direct download links on the macOS/Windows buttons.
+        // Falls back to /releases/latest if API fails (still works, one extra click).
+        (function() {
+            const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform) || /Mac/.test(navigator.userAgent);
+            const macBtn = document.getElementById('dl-macos');
+            const winBtn = document.getElementById('dl-windows');
+            const macExt = document.getElementById('dl-macos-ext');
+            const winExt = document.getElementById('dl-windows-ext');
+
+            // Swap primary button based on detected platform (default HTML has macOS as primary).
+            if (!isMac && macBtn && winBtn) {
+                macBtn.classList.remove('btn-primary');
+                winBtn.classList.add('btn-primary');
+            }
+
+            fetch('https://api.github.com/repos/trustbe/MouseStride/releases/latest')
+                .then(r => r.ok ? r.json() : Promise.reject(r.status))
+                .then(data => {
+                    const version = data.tag_name || '';
+                    const pkg = data.assets.find(a => a.name.endsWith('.pkg'));
+                    const msi = data.assets.find(a => a.name.endsWith('.msi'));
+                    if (pkg && macBtn) {
+                        macBtn.href = pkg.browser_download_url;
+                        if (macExt) macExt.textContent = `.pkg installer · ${version}`;
+                    }
+                    if (msi && winBtn) {
+                        winBtn.href = msi.browser_download_url;
+                        if (winExt) winExt.textContent = `.msi installer · ${version}`;
+                    }
+                })
+                .catch(() => { /* silent: links fall back to /releases/latest page */ });
+        })();
+
         function copyBrew(btn) {
-            navigator.clipboard.writeText('brew tap trustbe/mousestride && brew install --cask mousestride');
+            navigator.clipboard.writeText('brew install --cask trustbe/mousestride/mousestride');
             btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
             setTimeout(() => {
                 btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
