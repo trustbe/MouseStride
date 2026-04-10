@@ -35,9 +35,17 @@ open MouseStrideDaemon.app
 
 **Requirements:** Windows 10 or later
 
+#### winget (recommended)
+
+```powershell
+winget install trustbe.mousestride
+```
+
 #### Manual download
 
 Grab the [latest MSI](https://github.com/trustbe/MouseStride/releases/latest) and run the installer.
+
+> **Note:** The MSI is not code-signed. On first launch, Windows SmartScreen may show "Unknown publisher" — click **More info** → **Run anyway**. `winget` verifies the installer by SHA256 and skips this warning.
 
 #### Build from source
 

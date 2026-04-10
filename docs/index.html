@@ -236,6 +236,90 @@
             opacity: 0.7;
         }
 
+        .winget-hint {
+            max-width: 520px;
+            margin: 1rem auto 0;
+            padding: 0.85rem 1.1rem;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .winget-hint-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .winget-hint code {
+            font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--text);
+            user-select: all;
+            flex: 1;
+        }
+
+        .winget-copy {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.3rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s, border-color 0.15s;
+            flex-shrink: 0;
+        }
+
+        .winget-copy:hover {
+            color: var(--text);
+            border-color: var(--text-muted);
+        }
+
+        .winget-hint[hidden] { display: none; }
+
+        .smartscreen-note {
+            max-width: 520px;
+            margin: 0.75rem auto 0;
+            padding: 0.7rem 0.95rem;
+            background: transparent;
+            border: none;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            text-align: left;
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+
+        .smartscreen-note svg {
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+            opacity: 0.6;
+        }
+
+        .smartscreen-note code {
+            font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+            font-size: 0.75rem;
+            background: var(--bg);
+            padding: 0.05rem 0.3rem;
+            border-radius: 3px;
+        }
+
+        .smartscreen-note a {
+            color: var(--text-muted);
+            text-decoration: underline;
+        }
+
+        .smartscreen-note[hidden] { display: none; }
+
         .btn-secondary {
             display: inline-flex;
             align-items: center;
@@ -598,13 +682,24 @@
                 <span class="btn-platform-ext" id="dl-windows-ext">.msi installer</span>
             </a>
         </div>
+        <div class="winget-hint" id="winget-hint" hidden>
+            <div class="winget-hint-label">Recommended on Windows:</div>
+            <code>winget install trustbe.mousestride</code>
+            <button class="winget-copy" onclick="copyWinget(this)" title="Copy to clipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+        </div>
+        <p class="smartscreen-note" id="smartscreen-note" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            If you download the .msi directly, Windows may show <strong>&ldquo;Unknown publisher&rdquo;</strong>. Click <strong>More info</strong> &rarr; <strong>Run anyway</strong>. <code>winget</code> skips this &mdash; <a href="https://github.com/trustbe/MouseStride" target="_blank" rel="noopener">source is public on GitHub</a>.
+        </p>
         <div style="text-align: center; margin-top: 1.25rem;">
             <a href="https://github.com/trustbe/MouseStride#build-from-source" class="btn-secondary">
                 Build from source
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
             </a>
         </div>
-        <p class="hero-note">macOS 13+<span>&middot;</span>Windows 10+<span>&middot;</span>Signed &amp; notarized<span>&middot;</span>No account needed</p>
+        <p class="hero-note">macOS 13+<span>&middot;</span>Windows 10+<span>&middot;</span>No account needed</p>
     </div>
 
     <div class="dot-divider"><i></i><i></i><i></i></div>
@@ -733,16 +828,27 @@
         // Fetch latest release and set direct download links on the macOS/Windows buttons.
         // Falls back to /releases/latest if API fails (still works, one extra click).
         (function() {
-            const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform) || /Mac/.test(navigator.userAgent);
+            const ua = navigator.userAgent;
+            const platform = navigator.platform || '';
+            const isMac = /Mac|iPhone|iPad|iPod/.test(platform) || /Mac OS X/.test(ua);
+            const isWin = /Win/.test(platform) || /Windows/.test(ua);
             const macBtn = document.getElementById('dl-macos');
             const winBtn = document.getElementById('dl-windows');
             const macExt = document.getElementById('dl-macos-ext');
             const winExt = document.getElementById('dl-windows-ext');
+            const smartNote = document.getElementById('smartscreen-note');
+            const wingetHint = document.getElementById('winget-hint');
 
             // Swap primary button based on detected platform (default HTML has macOS as primary).
-            if (!isMac && macBtn && winBtn) {
+            if (isWin && macBtn && winBtn) {
                 macBtn.classList.remove('btn-primary');
                 winBtn.classList.add('btn-primary');
+            }
+
+            // Show winget hint + SmartScreen heads-up only to Windows users.
+            if (isWin) {
+                if (wingetHint) wingetHint.hidden = false;
+                if (smartNote) smartNote.hidden = false;
             }
 
             fetch('https://api.github.com/repos/trustbe/MouseStride/releases/latest')
@@ -762,6 +868,13 @@
                 })
                 .catch(() => { /* silent: links fall back to /releases/latest page */ });
         })();
+
+        function copyWinget(btn) {
+            navigator.clipboard.writeText('winget install trustbe.mousestride');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+            setTimeout(() => { btn.innerHTML = orig; }, 2000);
+        }
 
         const SUPABASE_URL = 'https://ygtemljaowgiypcberhz.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_od7WoRDYP46HKboEp2s1aA_HXWRf54X';
