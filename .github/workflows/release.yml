@@ -60,15 +60,20 @@ jobs:
       - name: Verify universal binary
         run: lipo -info .build/universal/MouseStrideDaemon
 
-      - name: Create GitHub Release
+      - name: Upload macOS artifacts to release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >
-          gh release create "${{ steps.version.outputs.tag }}"
-          "MouseStride-${{ steps.version.outputs.tag }}.pkg"
-          "MouseStrideDaemon-${{ steps.version.outputs.tag }}.zip"
-          --title "MouseStride ${{ steps.version.outputs.tag }}"
-          --generate-notes
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          gh release upload "$TAG" \
+            "MouseStride-$TAG.pkg" \
+            "MouseStrideDaemon-$TAG.zip" \
+            --clobber \
+          || gh release create "$TAG" \
+            "MouseStride-$TAG.pkg" \
+            "MouseStrideDaemon-$TAG.zip" \
+            --title "MouseStride $TAG" \
+            --generate-notes
 
       - name: Clean up keychain
         if: always()
