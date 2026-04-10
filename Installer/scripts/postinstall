@@ -1,0 +1,16 @@
+#!/bin/bash
+# Spusti daemon hned po instalaci, aby se objevila ikona v menu baru.
+# Postinstall bezi jako root mimo GUI session prihlaseneho usera, takze
+# musime pouzit `launchctl asuser <UID>` k delegaci do user GUI domain.
+
+set -e
+
+CONSOLE_USER=$(stat -f%Su /dev/console)
+if [ -z "$CONSOLE_USER" ] || [ "$CONSOLE_USER" = "root" ]; then
+    exit 0
+fi
+
+USER_UID=$(id -u "$CONSOLE_USER")
+launchctl asuser "$USER_UID" open "/Applications/MouseStrideDaemon.app" || true
+
+exit 0

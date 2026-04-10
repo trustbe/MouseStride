@@ -3,17 +3,20 @@ BUILD_DIR = .build/release
 UNIVERSAL_BINARY = .build/universal/$(APP_NAME)
 VERSION ?= dev
 ZIP_NAME = $(APP_NAME)-$(VERSION).zip
+PKG_NAME = MouseStride-$(VERSION).pkg
+PKG_IDENTIFIER = com.mousestride.daemon.pkg
 BUNDLE = $(APP_NAME).app
 CONTENTS = $(BUNDLE)/Contents
 MACOS = $(CONTENTS)/MacOS
 
 ENTITLEMENTS = Sources/MouseStrideDaemon/App/MouseStrideDaemon.entitlements
 DEV_ID_APPLICATION ?= $(shell security find-identity -v -p codesigning 2>/dev/null | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)"/\1/')
+DEV_ID_INSTALLER ?= $(shell security find-identity -v 2>/dev/null | grep "Developer ID Installer" | head -1 | sed -E 's/.*"(.*)"/\1/')
 APPLE_ID ?=
 APPLE_TEAM_ID ?=
 APPLE_APP_PASSWORD ?=
 
-.PHONY: build bundle run build-universal bundle-universal sign notarize staple zip clean
+.PHONY: build bundle run build-universal bundle-universal sign notarize staple zip pkg clean
 
 build:
 	swift build -c release --product $(APP_NAME)
@@ -79,5 +82,38 @@ zip: bundle-universal
 	fi
 	ditto -c -k --sequesterRsrc --keepParent $(BUNDLE) $(ZIP_NAME)
 
+pkg: staple
+	@if [ -z "$(DEV_ID_INSTALLER)" ]; then \
+		echo "ERROR: No 'Developer ID Installer' identity found in keychain"; exit 1; \
+	fi
+	@if [ -z "$(APPLE_ID)" ] || [ -z "$(APPLE_TEAM_ID)" ] || [ -z "$(APPLE_APP_PASSWORD)" ]; then \
+		echo "ERROR: APPLE_ID, APPLE_TEAM_ID, APPLE_APP_PASSWORD must be set"; exit 1; \
+	fi
+	rm -rf .build/pkgroot .build/component.plist
+	mkdir -p .build/pkgroot/Applications
+	ditto $(BUNDLE) .build/pkgroot/Applications/$(BUNDLE)
+	xattr -cr .build/pkgroot
+	pkgbuild --analyze --root .build/pkgroot .build/component.plist
+	plutil -replace 0.BundleIsRelocatable -bool NO .build/component.plist
+	pkgbuild \
+		--root .build/pkgroot \
+		--component-plist .build/component.plist \
+		--identifier $(PKG_IDENTIFIER) \
+		--version $(VERSION) \
+		--scripts Installer/scripts \
+		--install-location / \
+		--sign "$(DEV_ID_INSTALLER)" \
+		.build/$(PKG_NAME)
+	xcrun notarytool submit .build/$(PKG_NAME) \
+		--apple-id "$(APPLE_ID)" \
+		--team-id "$(APPLE_TEAM_ID)" \
+		--password "$(APPLE_APP_PASSWORD)" \
+		--wait
+	xcrun stapler staple .build/$(PKG_NAME)
+	xcrun stapler validate .build/$(PKG_NAME)
+	spctl --assess --type install --verbose=4 .build/$(PKG_NAME)
+	mv .build/$(PKG_NAME) $(PKG_NAME)
+	rm -rf .build/pkgroot
+
 clean:
-	rm -rf .build $(BUNDLE) *.zip
+	rm -rf .build $(BUNDLE) *.zip *.pkg
