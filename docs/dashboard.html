@@ -307,10 +307,17 @@
                         byName[e.anonymous_name] = e;
                     }
                 }
-                const latest = Object.values(byName);
+                const latest = Object.values(byName).filter(e => e.total_mm > 0);
+
+                if (!latest.length) {
+                    document.getElementById('leaderboard').innerHTML = '<div class="empty">No entries yet. Be the first!</div>';
+                    return;
+                }
+
                 const totalDist = latest.reduce((s, e) => s + e.total_mm, 0);
                 const totalMice = latest.length;
-                const avgDaily = entries.reduce((s, e) => s + e.today_mm, 0) / entries.length;
+                const activeEntries = entries.filter(e => e.today_mm > 0);
+                const avgDaily = activeEntries.length ? activeEntries.reduce((s, e) => s + e.today_mm, 0) / activeEntries.length : 0;
 
                 document.getElementById('total-distance').textContent = formatMM(totalDist);
                 document.getElementById('total-mice').textContent = totalMice;

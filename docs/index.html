@@ -922,10 +922,12 @@
                         byName[e.anonymous_name] = e;
                     }
                 }
-                const latest = Object.values(byName);
+                const latest = Object.values(byName).filter(e => e.total_mm > 0);
+                if (!latest.length) return;
                 const totalDist = latest.reduce((s, e) => s + e.total_mm, 0);
                 const totalMice = latest.length;
-                const avgDaily = entries.reduce((s, e) => s + e.today_mm, 0) / entries.length;
+                const activeEntries = entries.filter(e => e.today_mm > 0);
+                const avgDaily = activeEntries.length ? activeEntries.reduce((s, e) => s + e.today_mm, 0) / activeEntries.length : 0;
 
                 animateCounter(document.getElementById('hero-counter'), totalDist, 3000);
                 document.getElementById('total-distance').textContent = formatMM(totalDist);
